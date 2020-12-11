@@ -28,25 +28,32 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
         SoundPlayer.onFinishedPlaying(() => {
           dispatch(displaymusicAction.setDisplay(false));
         });
-        _getInfo();
         dispatch(displaymusicAction.setSeekSeconds(0));
         setSeconds(0);
         dispatch(displaymusicAction.setNavigate(' '));
       } catch (e) {}
     }
-  }, [_getInfo, dispatch, display, navigateDisplay, songplaying.link]);
+  }, [dispatch, display, navigateDisplay, songplaying.link]);
 
   useEffect(() => {
-    try {
-      const se = Number((seconds * seekSeconds).toFixed(0));
-      if (se > 0 && onChangeSeconds == true) {
-        dispatch(displaymusicAction.setChangeSeconds(false));
-        SoundPlayer.seek(se);
-      }
-      if (display == true) SoundPlayer.resume();
-    } catch (e) {}
-    _getInfo();
-  }, [seekSeconds, seconds, onChangeSeconds, _getInfo, display, dispatch]);
+    if (display == true) {
+      try {
+        const se = Number((seconds * seekSeconds).toFixed(0));
+        if (se > 0 && onChangeSeconds == true) {
+          dispatch(displaymusicAction.setChangeSeconds(false));
+          SoundPlayer.seek(se);
+        }
+        if (display == true) SoundPlayer.resume();
+      } catch (e) {}
+    }
+  }, [
+    seekSeconds,
+    seconds,
+    onChangeSeconds,
+    display,
+    dispatch,
+    navigateDisplay,
+  ]);
 
   const _getInfo = useCallback(async () => {
     try {
@@ -55,12 +62,19 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
       setSeconds(info.duration);
     } catch (e) {}
   }, []);
+  useEffect(() => {
+    if (display === true) {
+      _getInfo();
+    }
+  }, [_getInfo, display]);
 
   useEffect(() => {
-    setInterval(function() {
-      _currentTime();
-    }, 1000);
-  }, [_currentTime]);
+    if (display == true) {
+      setInterval(function() {
+        _currentTime();
+      }, 1000);
+    }
+  }, [_currentTime, display]);
 
   const _currentTime = useCallback(async () => {
     try {

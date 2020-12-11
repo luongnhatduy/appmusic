@@ -27,8 +27,9 @@ const ImgDisplayMusic = ({navigation, item}) => {
 
     Animated.timing(rotateValue, {
       toValue: 1,
-      duration: 30000,
+      duration: 20000,
       easing: Easing.linear,
+      useNativeDriver: true,
     }).start(() => StartImageRotate());
   }, [rotateValue]);
 
