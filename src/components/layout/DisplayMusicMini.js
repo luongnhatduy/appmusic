@@ -15,6 +15,7 @@ import {BlurView} from '@react-native-community/blur';
 import {useSelector, useDispatch} from 'react-redux';
 import NavigationService from '@utils/NavigationService';
 import {actions as muicdisplayAction} from '@modules/displaymusic/store';
+import { withOrientation } from 'react-navigation';
 
 const DisplayMusicMini = ({navigation}) => {
   const dispatch = useDispatch();
@@ -23,16 +24,10 @@ const DisplayMusicMini = ({navigation}) => {
 
   const displaymusic = useCallback(() => {
     dispatch(muicdisplayAction.setSeekSeconds(valueSlider));
-
     NavigationService.navigate('DisplayMusicScreen');
-  }, [dispatch]);
+  }, [dispatch, valueSlider]);
   return (
     <View style={styles.container}>
-      <BlurView
-        style={Platform.OS === 'ios' ? styles.absolute : styles.absoluteAndroid}
-        blurType="xlight"
-        blurAmount={10}
-      />
       <View style={styles.item}>
         <TouchableOpacity
           onPress={displaymusic}
@@ -84,6 +79,7 @@ const styles = StyleSheet.create({
     padding: 10,
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: 'white',
     justifyContent: 'space-between',
   },
   txtItem: {

@@ -34,7 +34,7 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
         dispatch(displaymusicAction.setNavigate(' '));
       } catch (e) {}
     }
-  }, [_getInfo, dispatch, navigateDisplay, songplaying.link]);
+  }, [_getInfo, dispatch, display, navigateDisplay, songplaying.link]);
 
   useEffect(() => {
     try {
@@ -46,11 +46,12 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
       if (display == true) SoundPlayer.resume();
     } catch (e) {}
     _getInfo();
-  }, [seekSeconds, seconds, onChangeSeconds]);
+  }, [seekSeconds, seconds, onChangeSeconds, _getInfo, display, dispatch]);
 
   const _getInfo = useCallback(async () => {
     try {
       const info = await SoundPlayer.getInfo();
+      console.log('info', info);
       setSeconds(info.duration);
     } catch (e) {}
   }, []);
@@ -89,7 +90,7 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
         SoundPlayer.resume();
       }
     } catch (e) {}
-  }, [dispatch, display]);
+  }, [dispatch, display, songplaying.link]);
 
   const next_prev = useCallback(
     status => {
@@ -115,6 +116,7 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
             next_prev('prev');
           }}>
           <Image
+            // eslint-disable-next-line react-native/no-inline-styles
             style={{
               width: displayMusicScreen ? 30 : 13,
               height: displayMusicScreen ? 25 : 13,
@@ -128,6 +130,7 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
           () => (
             <TouchableOpacity onPress={_setdisplay}>
               <Image
+                // eslint-disable-next-line react-native/no-inline-styles
                 style={{
                   width: displayMusicScreen ? 50 : 25,
                   height: displayMusicScreen ? 50 : 25,
@@ -141,7 +144,7 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
               />
             </TouchableOpacity>
           ),
-          [display],
+          [_setdisplay, display, displayMusicScreen],
         )}
 
         <TouchableOpacity
@@ -149,6 +152,7 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
             next_prev('next');
           }}>
           <Image
+            // eslint-disable-next-line react-native/no-inline-styles
             style={{
               width: displayMusicScreen ? 30 : 13,
               height: displayMusicScreen ? 25 : 13,

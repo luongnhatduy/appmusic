@@ -38,10 +38,7 @@ const HomeScreen = ({navigation}) => {
           <BannerList />
           <ListTop navigation={navigation} />
         </ScrollView>
-        {useMemo(() => songplaying && <DisplayMusicMini />, [
-          songplaying,
-          display,
-        ])}
+        {useMemo(() => songplaying && <DisplayMusicMini />, [songplaying])}
       </View>
     </Fragment>
   );

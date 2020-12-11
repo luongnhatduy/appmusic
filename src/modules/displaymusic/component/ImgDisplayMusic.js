@@ -1,4 +1,10 @@
-import React, {useMemo, useEffect, useState, Fragment} from 'react';
+import React, {
+  useMemo,
+  useEffect,
+  useState,
+  Fragment,
+  useCallback,
+} from 'react';
 import {
   TouchableOpacity,
   View,
@@ -14,24 +20,26 @@ const screenWidth = Dimensions.get('window').width;
 
 const ImgDisplayMusic = ({navigation, item}) => {
   const [rotateValue, setRotateValue] = useState(new Animated.Value(0));
-  useEffect(() => {
-    StartImageRotate();
-  }, []);
 
-  function StartImageRotate() {
+  const StartImageRotate = useCallback(() => {
+    console.log('anhduy dep trai');
     rotateValue.setValue(0);
 
     Animated.timing(rotateValue, {
       toValue: 1,
-      duration: 10000,
+      duration: 30000,
       easing: Easing.linear,
     }).start(() => StartImageRotate());
-  }
+  }, [rotateValue]);
 
   const RotateData = rotateValue.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg'],
   });
+
+  useEffect(() => {
+    StartImageRotate();
+  }, [StartImageRotate]);
 
   return (
     <Fragment>

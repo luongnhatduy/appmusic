@@ -25,7 +25,7 @@ const ListTop = ({navigation}) => {
     <Fragment>
       <View style={styles.container}>
         <View>
-          <Text style={styles.title}>BẢNG XẾP HẠNG ></Text>
+          <Text style={styles.title}>BẢNG XẾP HẠNG &gt;</Text>
           <ImageBackground
             source={require('../../../assets/images/backgroundimg.jpg')}
             style={datalistTop.length == 0 ? styles.bg : styles.imgbg}
