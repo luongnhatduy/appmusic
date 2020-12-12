@@ -14,9 +14,13 @@ import {actions as displaymusicAction} from '@modules/displaymusic/store';
 
 const ButtonDisplay = ({navigation, displayMusicScreen}) => {
   const {songplaying} = useSelector(state => state.storage);
-  const {seekSeconds, navigateDisplay, display, onChangeSeconds} = useSelector(
-    state => state.musicdisplay,
-  );
+  const {
+    seekSeconds,
+    navigateDisplay,
+    display,
+    onChangeSeconds,
+    isPause,
+  } = useSelector(state => state.musicdisplay);
   const {datalistTop} = useSelector(state => state.home);
 
   const dispatch = useDispatch();
@@ -36,6 +40,13 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
   }, [dispatch, display, navigateDisplay, songplaying.link]);
 
   useEffect(() => {
+    console.log(isPause, 'isPause');
+    if (!!isPause && display == true) {
+      SoundPlayer.pause();
+    }
+  }, [display, isPause]);
+
+  useEffect(() => {
     if (display == true) {
       try {
         const se = Number((seconds * seekSeconds).toFixed(0));
@@ -44,6 +55,7 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
           SoundPlayer.seek(se);
         }
         if (display == true) SoundPlayer.resume();
+        dispatch(displaymusicAction.setPause(false));
       } catch (e) {}
     }
   }, [
@@ -96,11 +108,13 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
     try {
       if (display == true) {
         SoundPlayer.pause();
+        dispatch(displaymusicAction.setPause(true));
       } else {
         const info = await SoundPlayer.getInfo();
         if (info.currentTime / info.duration == 1) {
           SoundPlayer.seek(0);
         }
+        dispatch(displaymusicAction.setPause(false));
         SoundPlayer.resume();
       }
     } catch (e) {}
@@ -116,6 +130,7 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
         return newobject;
       }, {});
       SoundPlayer.playUrl(indexItem.link);
+      dispatch(displaymusicAction.setPause(false));
       dispatch(storageAction.setSongPlaying(indexItem));
       dispatch(displaymusicAction.setDisplay(true));
     },

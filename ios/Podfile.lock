@@ -1,6 +1,7 @@
 PODS:
   - boost-for-react-native (1.63.0)
   - DoubleConversion (1.1.6)
+  - DVAssetLoaderDelegate (0.3.3)
   - FBLazyVector (0.61.5)
   - FBReactNativeSpec (0.61.5):
     - Folly (= 2018.10.22.00)
@@ -186,6 +187,16 @@ PODS:
     - React
   - react-native-slider (2.0.8):
     - React
+  - react-native-video (5.1.0-alpha8):
+    - React
+    - react-native-video/Video (= 5.1.0-alpha8)
+  - react-native-video/Video (5.1.0-alpha8):
+    - React
+  - react-native-video/VideoCaching (5.1.0-alpha8):
+    - DVAssetLoaderDelegate (~> 0.3.1)
+    - React
+    - react-native-video/Video
+    - SPTPersistentCache (~> 1.1.0)
   - React-RCTActionSheet (0.61.5):
     - React-Core/RCTActionSheetHeaders (= 0.61.5)
   - React-RCTAnimation (0.61.5):
@@ -235,6 +246,7 @@ PODS:
     - React
   - RNSVG (9.13.6):
     - React
+  - SPTPersistentCache (1.1.0)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -256,6 +268,8 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
+  - react-native-video (from `../node_modules/react-native-video/react-native-video.podspec`)
+  - react-native-video/VideoCaching (from `../node_modules/react-native-video/react-native-video.podspec`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
   - React-RCTBlob (from `../node_modules/react-native/Libraries/Blob`)
@@ -279,6 +293,8 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - boost-for-react-native
+    - DVAssetLoaderDelegate
+    - SPTPersistentCache
 
 EXTERNAL SOURCES:
   DoubleConversion:
@@ -313,6 +329,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/blur"
   react-native-slider:
     :path: "../node_modules/@react-native-community/slider"
+  react-native-video:
+    :path: "../node_modules/react-native-video/react-native-video.podspec"
   React-RCTActionSheet:
     :path: "../node_modules/react-native/Libraries/ActionSheetIOS"
   React-RCTAnimation:
@@ -353,6 +371,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   DoubleConversion: 5805e889d232975c086db112ece9ed034df7a0b2
+  DVAssetLoaderDelegate: 0caec20e4e08b8560b691131539e9180024d4bce
   FBLazyVector: aaeaf388755e4f29cd74acbc9e3b8da6d807c37f
   FBReactNativeSpec: 118d0d177724c2d67f08a59136eb29ef5943ec75
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
@@ -368,6 +387,7 @@ SPEC CHECKSUMS:
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-slider: 3a1cfd00c9c31068251b536822f7192e8d1d6b6f
+  react-native-video: dbb8df4f0bbdf80de6797c90fcad8bc12b19401d
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360
   React-RCTBlob: d89293cc0236d9cb0933d85e430b0bbe81ad1d72
@@ -385,8 +405,9 @@ SPEC CHECKSUMS:
   RNScreens: 6adf01eb4080f44af6cca551207c6b0505066857
   RNSoundPlayer: 36fe7b7390a62c81a7eb4deeca07420399699872
   RNSVG: 8ba35cbeb385a52fd960fd28db9d7d18b4c2974f
+  SPTPersistentCache: df36ea46762d7cf026502bbb86a8b79d0080dff4
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: d4bd62fd907c715f3fe70ee89a9e8ba60c7853ae
+PODFILE CHECKSUM: d5eec814919ff8bdbe926855c2622cb06ab43371
 
 COCOAPODS: 1.9.1

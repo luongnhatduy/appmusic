@@ -7,6 +7,7 @@ import i18n from '@i18n';
 import HomeStack from '@stack/HomeStack';
 import FavoriteStack from '@stack/FavoriteStack';
 import DisplayMusicScreen from '@modules/displaymusic/component/DisplayMusicScreen';
+import PlayVideoScreen from '@modules/playvideo/component/PlayVideoScreen';
 import CustomHeader from '@components/layout/CustomHeader';
 import React from 'react';
 
@@ -105,6 +106,7 @@ const AppNavigator = createStackNavigator(
   {
     RootTabNavigator,
     DisplayMusicScreen,
+    PlayVideoScreen,
     // WebViewStack: WebViewScreen,
   },
   {

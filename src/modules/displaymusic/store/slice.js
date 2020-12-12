@@ -4,6 +4,7 @@ const initialState = {
   seekSeconds: undefined,
   navigateDisplay: undefined,
   display: undefined,
+  isPause: false,
   valueSlider: 0,
   onChangeSeconds: false,
   seconds: 0,
@@ -32,6 +33,10 @@ const musicdisplay = createSlice({
     setDisplay: (state, {payload}) => ({
       ...state,
       display: payload,
+    }),
+    setPause: (state, {payload}) => ({
+      ...state,
+      isPause: payload,
     }),
     setSeconds: (state, {payload}) => ({
       ...state,

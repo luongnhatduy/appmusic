@@ -37,6 +37,13 @@ const ListSong = ({navigation, item, index, favorite}) => {
 
   const displaymusic = useCallback(
     item => {
+      console.log('item', item);
+      if (item && item.type && item.type === 'video') {
+        NavigationService.navigate('PlayVideoScreen', item);
+        dispatch(displaymusicAction.setPause(true));
+        return;
+      }
+      dispatch(displaymusicAction.setPause(false));
       dispatch(storageAction.setSongPlaying(item));
       dispatch(displaymusicAction.setDisplay(true));
       dispatch(displaymusicAction.setNavigate('Play'));
@@ -51,7 +58,7 @@ const ListSong = ({navigation, item, index, favorite}) => {
       setStatus(!status);
       favorite && dispatch(homeAction.setStatusLike(true));
     },
-    [dispatch, status],
+    [dispatch, favorite, status],
   );
   return (
     <Fragment>
@@ -91,7 +98,14 @@ const ListSong = ({navigation, item, index, favorite}) => {
               onPress={() => {
                 likeSong(item);
               }}>
-              <FavoriteIcon isLiked={status} />
+              {item.type === 'audio' && <FavoriteIcon isLiked={status} />}
+              {item.type === 'video' && (
+                <Image
+                  style={styles.mv}
+                  resizeMode="contain"
+                  source={require('@assets/images/mv.png')}
+                />
+              )}
             </TouchableOpacity>
           ),
           [favorite, item, likeSong, status],
@@ -111,6 +125,11 @@ const styles = StyleSheet.create({
     width: 25,
     height: 25,
     borderRadius: 5,
+  },
+  mv: {
+    height: 20,
+    width: 20,
+    marginRight: 2,
   },
   txtItem: {
     marginLeft: 10,

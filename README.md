@@ -1,5 +1,5 @@
 ### run ios
-rm -rf node_modules/ && yarn && cd ios && rm -rf Pods && rm -rf build && rm -rf Podfile.lock && pod install && cd .. && yarn ios
+rm -rf node_modules/ && yarn && cd ios && rm -rf Pods && rm -rf build && rm -rf Podfile.lock && pod install && cd .. && react-native run-ios --simulator="iPhone 11 Pro Max"
 
 ### run android
 rm -rf node_modules/ && yarn && yarn android

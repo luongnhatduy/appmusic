@@ -25,6 +25,8 @@
     "react-native-snap-carousel": "^3.8.4",
     "react-native-sound-player": "^0.10.3",
     "react-native-svg": "^9.13.6",
+    "react-native-video": "^5.1.0-alpha8",
+    "react-native-video-controls": "^2.7.1",
     "react-navigation": "^4.0.10",
     "react-navigation-stack": "^1.10.3",
     "react-navigation-tabs": "^2.6.2",
