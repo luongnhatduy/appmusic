@@ -26,10 +26,7 @@ const FavoriteScreen = ({navigation}) => {
         ),
         [listFavorite],
       )}
-      {useMemo(() => songplaying && <DisplayMusicMini />, [
-        songplaying,
-        display,
-      ])}
+      {useMemo(() => songplaying && <DisplayMusicMini />, [songplaying])}
     </Fragment>
   );
 };

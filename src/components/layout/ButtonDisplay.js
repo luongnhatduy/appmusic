@@ -28,10 +28,7 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
   useEffect(() => {
     if (navigateDisplay == 'Play' && display == true) {
       try {
-        SoundPlayer.playUrl(songplaying.link);
-        SoundPlayer.onFinishedPlaying(() => {
-          dispatch(displaymusicAction.setDisplay(false));
-        });
+        songplaying.link && SoundPlayer.playUrl(songplaying.link);
         dispatch(displaymusicAction.setSeekSeconds(0));
         setSeconds(0);
         dispatch(displaymusicAction.setNavigate(' '));
@@ -45,6 +42,15 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
       SoundPlayer.pause();
     }
   }, [display, isPause]);
+
+  useEffect(() => {
+    if (display === true) {
+      SoundPlayer.onFinishedPlaying(() => {
+        console.log('endendend');
+        dispatch(displaymusicAction.setDisplay(false));
+      });
+    }
+  }, [dispatch, display]);
 
   useEffect(() => {
     if (display == true) {
@@ -102,7 +108,7 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
   const _setdisplay = useCallback(async () => {
     if (display == undefined) {
       dispatch(displaymusicAction.setDisplay(true));
-      SoundPlayer.playUrl(songplaying.link);
+      songplaying.link && SoundPlayer.playUrl(songplaying.link);
     }
     dispatch(displaymusicAction.setDisplay(!display));
     try {
@@ -129,10 +135,13 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
         }
         return newobject;
       }, {});
-      SoundPlayer.playUrl(indexItem.link);
-      dispatch(displaymusicAction.setPause(false));
-      dispatch(storageAction.setSongPlaying(indexItem));
-      dispatch(displaymusicAction.setDisplay(true));
+      console.log(indexItem, 'indexItem');
+      if (indexItem) {
+        songplaying.link && SoundPlayer.playUrl(indexItem.link);
+        dispatch(displaymusicAction.setPause(false));
+        dispatch(storageAction.setSongPlaying(indexItem));
+        dispatch(displaymusicAction.setDisplay(true));
+      }
     },
     [datalistTop, dispatch, songplaying.link],
   );

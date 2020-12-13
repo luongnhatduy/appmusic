@@ -8,6 +8,8 @@ import HomeStack from '@stack/HomeStack';
 import FavoriteStack from '@stack/FavoriteStack';
 import DisplayMusicScreen from '@modules/displaymusic/component/DisplayMusicScreen';
 import PlayVideoScreen from '@modules/playvideo/component/PlayVideoScreen';
+import SplashScreen from '@modules/splash/SplashScreen';
+
 import CustomHeader from '@components/layout/CustomHeader';
 import React from 'react';
 
@@ -35,17 +37,18 @@ const RootTabNavigator = createBottomTabNavigator(
       navigationOptions: () => ({
         tabBarIcon: ({focused, tintColor}) => (
           <Image
-            source={require('../assets/images/itunes.png')}
+            source={require('../assets/images/music.png')}
             style={{
+              resizeMode: 'contain',
               width: 20,
               height: 20,
               tintColor: focused ? tintColor : '#BDBDBD',
             }}
           />
         ),
-        title: i18n.t('HomeScreen.BottomTabLabel'),
+        title: 'Trang chủ',
         tabBarOnPress: ({navigation: {state, popToTop}, defaultHandler}) => {
-          popToTop();
+          // popToTop();
           defaultHandler();
         },
       }),
@@ -55,17 +58,18 @@ const RootTabNavigator = createBottomTabNavigator(
       navigationOptions: () => ({
         tabBarIcon: ({focused, tintColor}) => (
           <Image
-            source={require('../assets/images/e-commerce-like-heart.png')}
+            source={require('../assets/images/music-down.png')}
             style={{
-              width: 20,
-              height: 20,
+              resizeMode: 'contain',
+              width: 27,
+              height: 27,
               tintColor: focused ? tintColor : '#BDBDBD',
             }}
           />
         ),
-        title: i18n.t('FavoriteScreen.BottomTabLabel'),
+        title: 'Thư viện',
         tabBarOnPress: ({navigation: {state, popToTop}, defaultHandler}) => {
-          popToTop();
+          // popToTop();
           defaultHandler();
         },
       }),
@@ -105,12 +109,13 @@ const RootTabNavigator = createBottomTabNavigator(
 const AppNavigator = createStackNavigator(
   {
     RootTabNavigator,
+    SplashScreen,
     DisplayMusicScreen,
     PlayVideoScreen,
     // WebViewStack: WebViewScreen,
   },
   {
-    initialRouteName: 'RootTabNavigator',
+    initialRouteName: 'SplashScreen',
     defaultNavigationOptions: {header: null},
   },
 );

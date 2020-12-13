@@ -68,7 +68,7 @@ const DisplayMusicComponent = ({navigation}) => {
           [dispatch, valueSlider],
         )}
 
-        <View style={{paddingBottom: 70, padding: 40}}>
+        <View style={{paddingBottom: 70, padding: 20}}>
           <ButtonDisplay displayMusicScreen />
         </View>
       </View>
@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
   },
   styleSlider: {
     height: 30,
+    width: '100%',
   },
   track: {
     height: 2,

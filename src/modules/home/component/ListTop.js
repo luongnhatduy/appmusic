@@ -25,7 +25,14 @@ const ListTop = ({navigation}) => {
     <Fragment>
       <View style={styles.container}>
         <View>
-          <Text style={styles.title}>BẢNG XẾP HẠNG &gt;</Text>
+          {useMemo(
+            () =>
+              datalistTop.length > 0 && (
+                <Text style={styles.title}>Top bài hát &gt;</Text>
+              ),
+            [datalistTop.length],
+          )}
+
           <ImageBackground
             source={require('../../../assets/images/backgroundimg.jpg')}
             style={datalistTop.length == 0 ? styles.bg : styles.imgbg}
@@ -84,7 +91,9 @@ const styles = StyleSheet.create({
     marginBottom: 35,
   },
   title: {
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: '500',
+    fontStyle: 'italic',
   },
   imgbg: {
     width: screenWidth * 0.95,
