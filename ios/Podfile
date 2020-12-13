@@ -36,7 +36,7 @@ target 'MusicApp' do
   pod 'react-native-video', :path => '../node_modules/react-native-video/react-native-video.podspec'
   pod 'react-native-video/VideoCaching', :path => '../node_modules/react-native-video/react-native-video.podspec'
   pod 'RNSoundPlayer', :path => '../node_modules/react-native-sound-player'
-
+  pod 'ReactNativeART', :path => '../node_modules/@react-native-community/art'
   target 'MusicAppTests' do
     inherit! :search_paths
     # Pods for testing

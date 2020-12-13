@@ -1,5 +1,11 @@
-import React, {useCallback, useEffect} from 'react';
-import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  Fragment,
+  useMemo,
+} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Header, Left as BaseLeft, Body, Right as BaseRight} from 'native-base';
 import i18n from '@i18n';
 import BackIcon from '@assets/svg/BackIcon';
@@ -8,9 +14,12 @@ import {Image} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import SoundPlayer from 'react-native-sound-player';
 import RNFS from 'react-native-fs';
+import * as Progress from 'react-native-progress';
 
 const DisplayMusicHeader = ({item}) => {
   const {songplaying} = useSelector(state => state.storage);
+  const [downloading, setDownloading] = useState(false);
+  const [percent, setPercent] = useState(0);
 
   const convertString = useCallback(str => {
     str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
@@ -32,6 +41,7 @@ const DisplayMusicHeader = ({item}) => {
   }, []);
 
   const handleDownload = useCallback(() => {
+    setDownloading(true);
     let path =
       convertString(songplaying.name_song)
         .split(' ')
@@ -44,45 +54,78 @@ const DisplayMusicHeader = ({item}) => {
       RNFS.downloadFile({
         background: true,
         fromUrl: songplaying.link,
+        begin: res => {
+          console.log('Response begin ===\n\n');
+          console.log(res);
+        },
         progress: res => {
-          console.log(res, 'res');
+          let progressPercent = res.bytesWritten / res.contentLength;
+          setPercent(progressPercent);
+          console.log('\n\nprogress===', progressPercent);
         },
         toFile: `${RNFS.DocumentDirectoryPath}/${path}.mp3`,
-      }).promise.then(r => {});
+      }).promise.then(r => {
+        setDownloading(false);
+        console.log(r, 'download success');
+      });
     }
   }, [convertString, songplaying]);
 
   return (
-    <Header
-      iosBarStyle="dark-content"
-      backgroundColor="white"
-      androidStatusBarColor="white"
-      style={style.headerStyle}>
-      <BaseLeft style={[style.leftStyle]}>
-        <TouchableOpacity
-          style={style.showBack}
-          onPress={() => {
-            NavigationService.goBack();
-          }}>
-          <BackIcon fill="white" />
-        </TouchableOpacity>
-      </BaseLeft>
-      <Body style={style.contentStyle}>
-        <Text style={style.txtnamesong}>{item.name_song}</Text>
-        <Text style={style.txtnamesinger}>{item.name_singer}</Text>
-      </Body>
-      <BaseRight style={[style.leftStyle]}>
-        {songplaying && !songplaying.type_audio && (
-          <TouchableOpacity style={style.showBack} onPress={handleDownload}>
-            <Image
-              style={style.download}
-              source={require('../../../assets/images/download.png')}
-              resizeMode="contain"
-            />
+    <Fragment>
+      <Header
+        iosBarStyle="dark-content"
+        backgroundColor="white"
+        androidStatusBarColor="white"
+        style={style.headerStyle}>
+        <BaseLeft style={[style.leftStyle]}>
+          <TouchableOpacity
+            style={style.showBack}
+            onPress={() => {
+              NavigationService.goBack();
+            }}>
+            <BackIcon fill="white" />
           </TouchableOpacity>
-        )}
-      </BaseRight>
-    </Header>
+        </BaseLeft>
+        <Body style={style.contentStyle}>
+          <Text style={style.txtnamesong}>{item.name_song}</Text>
+          <Text style={style.txtnamesinger}>{item.name_singer}</Text>
+        </Body>
+        <BaseRight style={[style.leftStyle]}>
+          {useMemo(
+            () =>
+              songplaying &&
+              !songplaying.type_audio && (
+                <View>
+                  {!!downloading ? (
+                    <Progress.Circle
+                      size={40}
+                      progress={percent}
+                      textStyle={{fontSize: 13}}
+                      showsText={true}
+                      color="white"
+                      borderWidth={0}
+                      thickness={3}
+                      unfilledColor={'rgba(255, 255, 255, 0.2)'}
+                    />
+                  ) : (
+                    <TouchableOpacity
+                      style={style.showBack}
+                      onPress={handleDownload}>
+                      <Image
+                        style={style.download}
+                        source={require('../../../assets/images/download.png')}
+                        resizeMode="contain"
+                      />
+                    </TouchableOpacity>
+                  )}
+                </View>
+              ),
+            [downloading, handleDownload, percent, songplaying],
+          )}
+        </BaseRight>
+      </Header>
+    </Fragment>
   );
 };
 
