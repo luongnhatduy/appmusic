@@ -36,7 +36,6 @@ export const fetchListTop = createOperation({
   },
   process: async ({payload, dispatch}) => {
     const result = await services.getListTop();
-    console.log(result, 'result');
     return result;
   },
 });

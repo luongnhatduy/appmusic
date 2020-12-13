@@ -13,10 +13,6 @@ import VideoPlayer from 'react-native-video-controls';
 import NavigationService from '@utils/NavigationService';
 
 const PlayVideoScreen = ({navigation}) => {
-  useEffect(() => {
-    console.log(navigation.state.params, 'videoF');
-  }, [navigation]);
-
   const onBack = useCallback(() => {
     NavigationService.goBack();
   }, []);

@@ -37,7 +37,6 @@ const ListSong = ({navigation, item, index, favorite}) => {
 
   const displaymusic = useCallback(
     item => {
-      console.log('item', item);
       if (item && item.type && item.type === 'video') {
         NavigationService.navigate('PlayVideoScreen', item);
         dispatch(displaymusicAction.setPause(true));

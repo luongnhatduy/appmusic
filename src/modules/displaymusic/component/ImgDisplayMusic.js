@@ -22,7 +22,6 @@ const ImgDisplayMusic = ({navigation, item}) => {
   const [rotateValue, setRotateValue] = useState(new Animated.Value(0));
 
   const StartImageRotate = useCallback(() => {
-    console.log('anhduy dep trai');
     rotateValue.setValue(0);
 
     Animated.timing(rotateValue, {

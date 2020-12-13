@@ -37,7 +37,6 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
   }, [dispatch, display, navigateDisplay, songplaying.link]);
 
   useEffect(() => {
-    console.log(isPause, 'isPause');
     if (!!isPause && display == true) {
       SoundPlayer.pause();
     }
@@ -46,7 +45,6 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
   useEffect(() => {
     if (display === true) {
       SoundPlayer.onFinishedPlaying(() => {
-        console.log('endendend');
         dispatch(displaymusicAction.setDisplay(false));
       });
     }
@@ -76,7 +74,6 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
   const _getInfo = useCallback(async () => {
     try {
       const info = await SoundPlayer.getInfo();
-      console.log('info', info);
       setSeconds(info.duration);
     } catch (e) {}
   }, []);
@@ -135,7 +132,6 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
         }
         return newobject;
       }, {});
-      console.log(indexItem, 'indexItem');
       if (indexItem) {
         songplaying.link && SoundPlayer.playUrl(indexItem.link);
         dispatch(displaymusicAction.setPause(false));

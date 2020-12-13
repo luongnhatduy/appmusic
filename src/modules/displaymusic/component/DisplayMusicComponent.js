@@ -25,7 +25,6 @@ const DisplayMusicComponent = ({navigation}) => {
   const dispatch = useDispatch();
   const {valueSlider, seconds} = useSelector(state => state.musicdisplay);
 
-  // console.log(valueSlider, seconds, 'valuaeÏ');
   const Seconds = useMemo(
     () => (
       <View style={styles.viewSeconds}>

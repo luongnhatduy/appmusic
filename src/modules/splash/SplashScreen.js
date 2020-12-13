@@ -10,7 +10,7 @@ const SplashScreen = ({navigation}) => {
   useEffect(() => {
     setTimeout(() => {
       NavigationService.reset('RootTabNavigator');
-    }, 3400);
+    }, 3300);
   }, []);
   return (
     <View style={styles.container}>
