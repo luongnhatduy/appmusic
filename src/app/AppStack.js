@@ -137,7 +137,7 @@ const AppNavigator = createStackNavigator(
     // WebViewStack: WebViewScreen,
   },
   {
-    initialRouteName: 'RootTabNavigator',
+    initialRouteName: 'SplashScreen',
     defaultNavigationOptions: {header: null},
   },
 );
