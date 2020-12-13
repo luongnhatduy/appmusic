@@ -11,6 +11,7 @@ const MySongScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const {songplaying, listFavorite} = useSelector(state => state.storage);
   const {listMySong} = useSelector(state => state.mysong);
+  const {display} = useSelector(state => state.musicdisplay);
 
   const renderItem = ({item, index}) => (
     <ListSong item={item} index={index} mysong favorite />
@@ -42,7 +43,10 @@ const MySongScreen = ({navigation}) => {
         ),
         [listMySong],
       )}
-      {useMemo(() => songplaying && <DisplayMusicMini />, [songplaying])}
+      {useMemo(() => songplaying && <DisplayMusicMini />, [
+        songplaying,
+        display,
+      ])}
     </Fragment>
   );
 };

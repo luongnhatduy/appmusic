@@ -28,7 +28,7 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
   useEffect(() => {
     if (navigateDisplay === 'Play' && display === true) {
       try {
-        songplaying.link && SoundPlayer.playUrl(songplaying.link);
+        SoundPlayer.playUrl(songplaying.link);
         SoundPlayer.onFinishedPlaying(() => {
           dispatch(displaymusicAction.setDisplay(false));
         });
@@ -100,7 +100,7 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
   const _setdisplay = useCallback(async () => {
     if (display === undefined) {
       dispatch(displaymusicAction.setDisplay(true));
-      songplaying.link && SoundPlayer.playUrl(songplaying.link);
+      SoundPlayer.playUrl(songplaying.link);
     }
     dispatch(displaymusicAction.setDisplay(!display));
     try {
@@ -134,7 +134,7 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
         return newobject;
       }, {});
       if (indexItem) {
-        songplaying.link && SoundPlayer.playUrl(indexItem.link);
+        SoundPlayer.playUrl(indexItem.link);
         dispatch(displaymusicAction.setPause(false));
         dispatch(storageAction.setSongPlaying(indexItem));
         dispatch(displaymusicAction.setDisplay(true));
