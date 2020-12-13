@@ -6,7 +6,6 @@ import React, {
   Fragment,
 } from 'react';
 import {TouchableOpacity, View, Image, StyleSheet, Text} from 'react-native';
-import {BlurView} from '@react-native-community/blur';
 import {useSelector, useDispatch} from 'react-redux';
 import SoundPlayer from 'react-native-sound-player';
 import {actions as storageAction} from '@modules/storage/store';
@@ -27,9 +26,12 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
   const dispatch = useDispatch();
   const [seconds, setSeconds] = useState(0);
   useEffect(() => {
-    if (navigateDisplay == 'Play' && display == true) {
+    if (navigateDisplay === 'Play' && display === true) {
       try {
         songplaying.link && SoundPlayer.playUrl(songplaying.link);
+        SoundPlayer.onFinishedPlaying(() => {
+          dispatch(displaymusicAction.setDisplay(false));
+        });
         dispatch(displaymusicAction.setSeekSeconds(0));
         setSeconds(0);
         dispatch(displaymusicAction.setNavigate(' '));
@@ -38,28 +40,20 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
   }, [dispatch, display, navigateDisplay, songplaying.link]);
 
   useEffect(() => {
-    if (!!isPause && display == true) {
+    if (!!isPause && display === true) {
       SoundPlayer.pause();
     }
   }, [display, isPause]);
 
   useEffect(() => {
     if (display === true) {
-      SoundPlayer.onFinishedPlaying(() => {
-        dispatch(displaymusicAction.setDisplay(false));
-      });
-    }
-  }, [dispatch, display]);
-
-  useEffect(() => {
-    if (display == true) {
       try {
         const se = Number((seconds * seekSeconds).toFixed(0));
-        if (se > 0 && onChangeSeconds == true) {
+        if (se > 0 && onChangeSeconds === true) {
           dispatch(displaymusicAction.setChangeSeconds(false));
           SoundPlayer.seek(se);
         }
-        if (display == true) SoundPlayer.resume();
+        if (display === true) SoundPlayer.resume();
         dispatch(displaymusicAction.setPause(false));
       } catch (e) {}
     }
@@ -84,14 +78,6 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
     }
   }, [_getInfo, display]);
 
-  useEffect(() => {
-    if (display == true) {
-      setInterval(function() {
-        _currentTime();
-      }, 1000);
-    }
-  }, [_currentTime, display]);
-
   const _currentTime = useCallback(async () => {
     try {
       const info = await SoundPlayer.getInfo();
@@ -103,19 +89,27 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
     } catch (e) {}
   }, [dispatch]);
 
+  useEffect(() => {
+    if (display === true) {
+      setInterval(function() {
+        _currentTime();
+      }, 1000);
+    }
+  }, [_currentTime, display]);
+
   const _setdisplay = useCallback(async () => {
-    if (display == undefined) {
+    if (display === undefined) {
       dispatch(displaymusicAction.setDisplay(true));
       songplaying.link && SoundPlayer.playUrl(songplaying.link);
     }
     dispatch(displaymusicAction.setDisplay(!display));
     try {
-      if (display == true) {
+      if (display === true) {
         SoundPlayer.pause();
         dispatch(displaymusicAction.setPause(true));
       } else {
         const info = await SoundPlayer.getInfo();
-        if (info.currentTime / info.duration == 1) {
+        if (info.currentTime / info.duration === 1) {
           SoundPlayer.seek(0);
         }
         dispatch(displaymusicAction.setPause(false));
@@ -133,8 +127,8 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
         data = datalistTop;
       }
       const indexItem = data.reduce((newobject, item, index) => {
-        if (songplaying.link == item.link) {
-          let anh = status == 'next' ? index + 1 : index - 1;
+        if (songplaying.link === item.link) {
+          let anh = status === 'next' ? index + 1 : index - 1;
           newobject = data[anh];
         }
         return newobject;
@@ -178,7 +172,7 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
                   tintColor: displayMusicScreen ? 'white' : 'black',
                 }}
                 source={
-                  display == true
+                  display === true
                     ? require('../../assets/images/pause.png')
                     : require('../../assets/images/play.png')
                 }
