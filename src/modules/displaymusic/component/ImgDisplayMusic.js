@@ -17,6 +17,7 @@ import {
   Easing,
 } from 'react-native';
 const screenWidth = Dimensions.get('window').width;
+import {useSelector, useDispatch} from 'react-redux';
 
 const ImgDisplayMusic = ({navigation, item}) => {
   const [rotateValue, setRotateValue] = useState(new Animated.Value(0));
@@ -47,7 +48,11 @@ const ImgDisplayMusic = ({navigation, item}) => {
         () => (
           <View style={[styles.container]}>
             <Animated.Image
-              source={{uri: item.img}}
+              source={
+                !item.img
+                  ? require('../../../assets/images/default-img.jpg')
+                  : {uri: item.img}
+              }
               style={[styles.imgItem, {transform: [{rotate: RotateData}]}]}
             />
           </View>

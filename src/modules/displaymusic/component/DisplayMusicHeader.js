@@ -12,18 +12,34 @@ import RNFS from 'react-native-fs';
 const DisplayMusicHeader = ({item}) => {
   const {songplaying} = useSelector(state => state.storage);
 
+  const convertString = useCallback(str => {
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e');
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, 'i');
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, 'o');
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, 'u');
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, 'y');
+    str = str.replace(/đ/g, 'd');
+    str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, 'A');
+    str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, 'E');
+    str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, 'I');
+    str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, 'O');
+    str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, 'U');
+    str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, 'Y');
+    str = str.replace(/Đ/g, 'D');
+    str = str.toLowerCase();
+    return str;
+  }, []);
+
   const handleDownload = useCallback(() => {
-    console.log('oke', songplaying);
-    console.log(
-      'bo m day',
-      songplaying.name_song.split(' ').join('_') +
-        '+' +
-        songplaying.name_singer.split(' ').join('_'),
-    );
     let path =
-      songplaying.name_song.split(' ').join('_') +
-      '+' +
-      songplaying.name_singer.split(' ').join('_');
+      convertString(songplaying.name_song)
+        .split(' ')
+        .join('_') +
+      '-' +
+      convertString(songplaying.name_singer)
+        .split(' ')
+        .join('_');
     if (songplaying && songplaying.link) {
       RNFS.downloadFile({
         background: true,
@@ -32,29 +48,9 @@ const DisplayMusicHeader = ({item}) => {
           console.log(res, 'res');
         },
         toFile: `${RNFS.DocumentDirectoryPath}/${path}.mp3`,
-      }).promise.then(r => {
-        console.log(r, 'rrrr');
-        console.log(`${RNFS.DocumentDirectoryPath}`, 'path');
-      });
+      }).promise.then(r => {});
     }
-  }, [songplaying]);
-
-  const readFile = useCallback(async () => {
-    // const file = await RNFS.read(`file://${RNFS.MainBundlePath}`);
-    // console.log(file, 'anhduy dep trai');
-    RNFS.readDir(RNFS.DocumentDirectoryPath)
-      .then(result => {
-        console.log('Got result', result);
-        // SoundPlayer.playUrl('file://' + result[0].path);
-      })
-      .catch(err => {
-        console.log(err.message, err.code);
-      });
-  }, []);
-
-  useEffect(() => {
-    readFile();
-  }, [readFile]);
+  }, [convertString, songplaying]);
 
   return (
     <Header
@@ -76,13 +72,15 @@ const DisplayMusicHeader = ({item}) => {
         <Text style={style.txtnamesinger}>{item.name_singer}</Text>
       </Body>
       <BaseRight style={[style.leftStyle]}>
-        <TouchableOpacity style={style.showBack} onPress={handleDownload}>
-          <Image
-            style={style.download}
-            source={require('../../../assets/images/download.png')}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
+        {songplaying && !songplaying.type_audio && (
+          <TouchableOpacity style={style.showBack} onPress={handleDownload}>
+            <Image
+              style={style.download}
+              source={require('../../../assets/images/download.png')}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        )}
       </BaseRight>
     </Header>
   );

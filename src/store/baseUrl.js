@@ -1,4 +1,4 @@
 const baseUrl = {
-  api: 'https://13f218e4177f.ngrok.io',
+  api: 'http://localhost:4000',
 };
 export default baseUrl;

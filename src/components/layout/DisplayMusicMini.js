@@ -15,7 +15,7 @@ import {BlurView} from '@react-native-community/blur';
 import {useSelector, useDispatch} from 'react-redux';
 import NavigationService from '@utils/NavigationService';
 import {actions as muicdisplayAction} from '@modules/displaymusic/store';
-import { withOrientation } from 'react-navigation';
+import {withOrientation} from 'react-navigation';
 
 const DisplayMusicMini = ({navigation}) => {
   const dispatch = useDispatch();
@@ -32,7 +32,15 @@ const DisplayMusicMini = ({navigation}) => {
         <TouchableOpacity
           onPress={displaymusic}
           style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Image source={{uri: songplaying.img}} style={styles.imgItem} />
+          {songplaying && songplaying.type_audio && (
+            <Image
+              source={require('../../assets/images/default-img.jpg')}
+              style={styles.imgItem}
+            />
+          )}
+          {songplaying && !songplaying.type_audio && (
+            <Image source={{uri: songplaying.img}} style={styles.imgItem} />
+          )}
           <View>
             <Text style={[styles.txtItem, {color: 'black'}]}>
               {songplaying.name_song}

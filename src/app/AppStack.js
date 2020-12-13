@@ -6,6 +6,7 @@ import {createStackNavigator} from 'react-navigation-stack';
 import i18n from '@i18n';
 import HomeStack from '@stack/HomeStack';
 import FavoriteStack from '@stack/FavoriteStack';
+import MySongStack from '@stack/MySongStack';
 import DisplayMusicScreen from '@modules/displaymusic/component/DisplayMusicScreen';
 import PlayVideoScreen from '@modules/playvideo/component/PlayVideoScreen';
 import SplashScreen from '@modules/splash/SplashScreen';
@@ -55,6 +56,27 @@ const RootTabNavigator = createBottomTabNavigator(
     },
     Favorite: {
       screen: FavoriteStack,
+      navigationOptions: () => ({
+        tabBarIcon: ({focused, tintColor}) => (
+          <Image
+            source={require('../assets/images/e-commerce-like-heart.png')}
+            style={{
+              resizeMode: 'contain',
+              width: 23,
+              height: 23,
+              tintColor: focused ? tintColor : '#BDBDBD',
+            }}
+          />
+        ),
+        title: 'Yêu thích',
+        tabBarOnPress: ({navigation: {state, popToTop}, defaultHandler}) => {
+          // popToTop();
+          defaultHandler();
+        },
+      }),
+    },
+    MySong: {
+      screen: MySongStack,
       navigationOptions: () => ({
         tabBarIcon: ({focused, tintColor}) => (
           <Image
@@ -115,7 +137,7 @@ const AppNavigator = createStackNavigator(
     // WebViewStack: WebViewScreen,
   },
   {
-    initialRouteName: 'SplashScreen',
+    initialRouteName: 'RootTabNavigator',
     defaultNavigationOptions: {header: null},
   },
 );

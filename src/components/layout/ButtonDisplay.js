@@ -22,6 +22,7 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
     isPause,
   } = useSelector(state => state.musicdisplay);
   const {datalistTop} = useSelector(state => state.home);
+  const {listMySong} = useSelector(state => state.mysong);
 
   const dispatch = useDispatch();
   const [seconds, setSeconds] = useState(0);
@@ -125,10 +126,16 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
 
   const next_prev = useCallback(
     status => {
-      const indexItem = datalistTop.reduce((newobject, item, index) => {
+      let data;
+      if (songplaying && songplaying.type_audio) {
+        data = listMySong;
+      } else {
+        data = datalistTop;
+      }
+      const indexItem = data.reduce((newobject, item, index) => {
         if (songplaying.link == item.link) {
           let anh = status == 'next' ? index + 1 : index - 1;
-          newobject = datalistTop[anh];
+          newobject = data[anh];
         }
         return newobject;
       }, {});
@@ -139,7 +146,7 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
         dispatch(displaymusicAction.setDisplay(true));
       }
     },
-    [datalistTop, dispatch, songplaying.link],
+    [datalistTop, dispatch, listMySong, songplaying],
   );
 
   return (

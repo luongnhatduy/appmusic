@@ -127,7 +127,7 @@ const CustomHeader = ({search}) => {
         </BaseRight>
       </View>
     ),
-    [_search, cancel],
+    [_search, cancel, searchKeyword],
   );
   const header = useMemo(
     () => (

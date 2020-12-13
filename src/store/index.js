@@ -6,6 +6,7 @@ import {persistStore, persistReducer} from 'redux-persist';
 
 import {reducer as homeReducer} from '../modules/home/store';
 import {reducer as favoriteReducer} from '../modules/favorite/store';
+import {reducer as mysongReducer} from '../modules/mysong/store';
 import {reducer as musicdisplayReducer} from '../modules/displaymusic/store';
 import {reducer as storageReducer} from '../modules/storage/store';
 import {reducer as searchReducer} from '../modules/search/store';
@@ -13,6 +14,7 @@ import {reducer as searchReducer} from '../modules/search/store';
 const rootReducer = combineReducers({
   home: homeReducer,
   favorite: favoriteReducer,
+  mysong: mysongReducer,
   musicdisplay: musicdisplayReducer,
   storage: storageReducer,
   search: searchReducer,
