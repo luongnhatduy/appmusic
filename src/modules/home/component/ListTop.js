@@ -33,27 +33,23 @@ const ListTop = ({navigation}) => {
             [datalistTop.length],
           )}
 
-          <ImageBackground
-            source={require('../../../assets/images/backgroundimg.jpg')}
-            style={datalistTop.length == 0 ? styles.bg : styles.imgbg}
-            imageStyle={styles.img}>
-            {useMemo(
-              () => (
-                <FlatList
-                  data={
-                    seeMore == false ? datalistTop.slice(0, 10) : datalistTop
-                  }
-                  keyExtractor={(item, index) => index.toString()}
-                  style={{flex: 1, flexDirection: 'row', marginTop: 10}}
-                  renderItem={renderItem}
-                />
-              ),
-              [datalistTop, seeMore],
-            )}
-
-            {useMemo(
-              () =>
-                datalistTop.length > 0 && (
+          {useMemo(
+            () =>
+              datalistTop.length > 0 && (
+                <ImageBackground
+                  source={require('../../../assets/images/backgroundimg.jpg')}
+                  style={datalistTop.length == 0 ? styles.bg : styles.imgbg}
+                  imageStyle={styles.img}>
+                  <FlatList
+                    data={
+                      seeMore === false ? datalistTop.slice(0, 10) : datalistTop
+                    }
+                    keyExtractor={(item, index) => index.toString()}
+                    style={{marginTop: 10}}
+                    renderItem={({item, index}) => (
+                      <ListSong item={item} index={index} />
+                    )}
+                  />
                   <TouchableOpacity
                     style={styles.seemore}
                     onPress={_setSeeMore}>
@@ -61,14 +57,14 @@ const ListTop = ({navigation}) => {
                       {seeMore == true ? 'Thu gọn >' : 'Xem thêm >'}
                     </Text>
                   </TouchableOpacity>
-                ),
-              [_setSeeMore, datalistTop.length, seeMore],
-            )}
-          </ImageBackground>
+                </ImageBackground>
+              ),
+            [_setSeeMore, datalistTop, seeMore],
+          )}
 
           {useMemo(
             () =>
-              datalistTop.length == 0 && (
+              datalistTop.length === 0 && (
                 <ActivityIndicator
                   size="large"
                   color="#990099"

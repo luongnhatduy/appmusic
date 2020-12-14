@@ -83,11 +83,10 @@ const styles = StyleSheet.create({
   },
   item: {
     flex: 1,
-    borderRadius: 10,
     padding: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#EEEEEE',
     justifyContent: 'space-between',
   },
   txtItem: {
