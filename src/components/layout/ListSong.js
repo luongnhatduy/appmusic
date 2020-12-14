@@ -21,6 +21,7 @@ import {actions as displaymusicAction} from '@modules/displaymusic/store';
 import {actions as homeAction} from '@modules/home/store';
 import FavoriteIcon from '@assets/svg/FavoriteIcon';
 import {actions as favoriteAction} from '@modules/favorite/store';
+import {actions as mysongAction} from '@modules/mysong/store';
 
 const ListSong = ({navigation, item, index, favorite}) => {
   const [status, setStatus] = useState(false);
@@ -58,6 +59,13 @@ const ListSong = ({navigation, item, index, favorite}) => {
       favorite && dispatch(homeAction.setStatusLike(true));
     },
     [dispatch, favorite, status],
+  );
+
+  const deleteFile = useCallback(
+    item => {
+      dispatch(mysongAction.deleteFile(item));
+    },
+    [dispatch],
   );
   return (
     <Fragment>
@@ -101,21 +109,31 @@ const ListSong = ({navigation, item, index, favorite}) => {
 
         {useMemo(
           () => (
-            <TouchableOpacity
-              style={{marginRight: !favorite ? 15 : 0}}
-              onPress={() => {
-                likeSong(item);
-              }}>
+            <View>
               {item.type === 'audio' && item.img && (
-                <FavoriteIcon isLiked={status} />
+                <TouchableOpacity
+                  style={{marginRight: !favorite ? 15 : 0}}
+                  onPress={() => {
+                    likeSong(item);
+                  }}>
+                  <FavoriteIcon isLiked={status} />
+                </TouchableOpacity>
               )}
+
               {item.type === 'audio' && !item.img && (
-                <Image
-                  style={styles.mv}
-                  resizeMode="contain"
-                  source={require('@assets/images/delete.png')}
-                />
+                <TouchableOpacity
+                  style={{marginRight: !favorite ? 15 : 0}}
+                  onPress={() => {
+                    deleteFile(item);
+                  }}>
+                  <Image
+                    style={styles.mv}
+                    resizeMode="contain"
+                    source={require('@assets/images/delete.png')}
+                  />
+                </TouchableOpacity>
               )}
+
               {item.type === 'video' && (
                 <Image
                   style={styles.mv}
@@ -123,9 +141,9 @@ const ListSong = ({navigation, item, index, favorite}) => {
                   source={require('@assets/images/mv.png')}
                 />
               )}
-            </TouchableOpacity>
+            </View>
           ),
-          [favorite, item, likeSong, status],
+          [deleteFile, favorite, item, likeSong, status],
         )}
       </View>
     </Fragment>

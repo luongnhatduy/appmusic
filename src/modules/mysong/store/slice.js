@@ -14,6 +14,10 @@ const favorite = createSlice({
       listMySong: result,
     }),
     failGetListMySong: state => ({...state}),
+    successDeleteFile: (state, {payload: {result}}) => ({
+      ...state,
+      listMySong: result,
+    }),
   },
 });
 
