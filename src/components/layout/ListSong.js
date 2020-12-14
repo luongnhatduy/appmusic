@@ -22,7 +22,7 @@ import {actions as homeAction} from '@modules/home/store';
 import FavoriteIcon from '@assets/svg/FavoriteIcon';
 import {actions as favoriteAction} from '@modules/favorite/store';
 
-const ListSong = ({navigation, item, index, favorite, mysong}) => {
+const ListSong = ({navigation, item, index, favorite}) => {
   const [status, setStatus] = useState(false);
   const {listFavorite} = useSelector(state => state.storage);
   const dispatch = useDispatch();
@@ -74,15 +74,16 @@ const ListSong = ({navigation, item, index, favorite, mysong}) => {
               ) : (
                 <View />
               )}
-              {!mysong && (
-                <Image source={{uri: item.img}} style={styles.imgItem} />
-              )}
-              {mysong && (
-                <Image
-                  source={require('../../assets/images/default-img.jpg')}
-                  style={styles.imgItem}
-                />
-              )}
+
+              <Image
+                source={
+                  !item.img
+                    ? require('../../assets/images/default-img.jpg')
+                    : {uri: item.img}
+                }
+                style={styles.imgItem}
+              />
+
               <View>
                 <Text
                   style={[
@@ -95,7 +96,7 @@ const ListSong = ({navigation, item, index, favorite, mysong}) => {
               </View>
             </TouchableOpacity>
           ),
-          [displaymusic, favorite, index, item, mysong],
+          [displaymusic, favorite, index, item],
         )}
 
         {useMemo(
@@ -105,10 +106,10 @@ const ListSong = ({navigation, item, index, favorite, mysong}) => {
               onPress={() => {
                 likeSong(item);
               }}>
-              {item.type === 'audio' && !mysong && (
+              {item.type === 'audio' && item.img && (
                 <FavoriteIcon isLiked={status} />
               )}
-              {item.type === 'audio' && mysong && (
+              {item.type === 'audio' && !item.img && (
                 <Image
                   style={styles.mv}
                   resizeMode="contain"
@@ -124,7 +125,7 @@ const ListSong = ({navigation, item, index, favorite, mysong}) => {
               )}
             </TouchableOpacity>
           ),
-          [favorite, item, likeSong, mysong, status],
+          [favorite, item, likeSong, status],
         )}
       </View>
     </Fragment>

@@ -30,22 +30,6 @@ const ListSearch = ({navigation}) => {
 
   const {listSearch} = useSelector(state => state.search);
 
-  const displaymusic = useCallback(
-    item => {
-      if (item && item.type && item.type === 'video') {
-        NavigationService.navigate('PlayVideoScreen', item);
-        dispatch(displaymusicAction.setPause(true));
-        return;
-      }
-      dispatch(displaymusicAction.setPause(false));
-      dispatch(storageAction.setSongPlaying(item));
-      dispatch(displaymusicAction.setDisplay(true));
-      dispatch(displaymusicAction.setNavigate('Play'));
-      NavigationService.navigate('DisplayMusicScreen');
-    },
-    [dispatch],
-  );
-
   const renderItem = ({item, index}) => (
     <ListSong item={item} index={index} favorite />
   );

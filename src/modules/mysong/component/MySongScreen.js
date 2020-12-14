@@ -14,7 +14,7 @@ const MySongScreen = ({navigation}) => {
   const {display} = useSelector(state => state.musicdisplay);
 
   const renderItem = ({item, index}) => (
-    <ListSong item={item} index={index} mysong favorite />
+    <ListSong item={item} index={index} favorite />
   );
 
   useEffect(() => {
