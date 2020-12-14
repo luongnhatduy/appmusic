@@ -16,10 +16,10 @@ const SearchScreen = ({navigation}) => {
     <Fragment>
       <View style={{flex: 1}}>
         <ListSearch />
-        {/* {useMemo(() => songplaying && <DisplayMusicMini />, [
+        {useMemo(() => songplaying && <DisplayMusicMini />, [
           songplaying,
           display,
-        ])} */}
+        ])}
       </View>
     </Fragment>
   );
