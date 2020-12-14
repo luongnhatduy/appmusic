@@ -2,6 +2,7 @@ import React, {useCallback, useEffect, Fragment, useMemo} from 'react';
 import {
   TouchableOpacity,
   View,
+  StatusBar,
   Text,
   ImageBackground,
   StyleSheet,
@@ -19,6 +20,7 @@ const PlayVideoScreen = ({navigation}) => {
 
   return (
     <Fragment>
+      <StatusBar hidden={true} />
       {useMemo(
         () => (
           <View style={{flex: 1}}>

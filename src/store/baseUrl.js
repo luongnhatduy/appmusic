@@ -1,4 +1,4 @@
 const baseUrl = {
-  api: 'https://e6762dce6be6.ngrok.io',
+  api: 'https://duyln.osddeitf.com',
 };
 export default baseUrl;
