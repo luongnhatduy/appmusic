@@ -10,6 +10,7 @@ import MySongStack from '@stack/MySongStack';
 import DisplayMusicScreen from '@modules/displaymusic/component/DisplayMusicScreen';
 import PlayVideoScreen from '@modules/playvideo/component/PlayVideoScreen';
 import SplashScreen from '@modules/splash/SplashScreen';
+import LoginScreen from '../modules/login/component/Login';
 
 import CustomHeader from '@components/layout/CustomHeader';
 import React from 'react';
@@ -49,7 +50,7 @@ const RootTabNavigator = createBottomTabNavigator(
         ),
         title: 'Trang chủ',
         tabBarOnPress: ({navigation: {state, popToTop}, defaultHandler}) => {
-          // popToTop();
+          popToTop();
           defaultHandler();
         },
       }),
@@ -70,7 +71,7 @@ const RootTabNavigator = createBottomTabNavigator(
         ),
         title: 'Yêu thích',
         tabBarOnPress: ({navigation: {state, popToTop}, defaultHandler}) => {
-          // popToTop();
+          popToTop();
           defaultHandler();
         },
       }),
@@ -91,7 +92,7 @@ const RootTabNavigator = createBottomTabNavigator(
         ),
         title: 'Thư viện',
         tabBarOnPress: ({navigation: {state, popToTop}, defaultHandler}) => {
-          // popToTop();
+          popToTop();
           defaultHandler();
         },
       }),
@@ -132,12 +133,13 @@ const AppNavigator = createStackNavigator(
   {
     RootTabNavigator,
     SplashScreen,
+    LoginScreen,
     DisplayMusicScreen,
     PlayVideoScreen,
     // WebViewStack: WebViewScreen,
   },
   {
-    initialRouteName: 'SplashScreen',
+    initialRouteName: 'LoginScreen',
     defaultNavigationOptions: {header: null},
   },
 );

@@ -5,7 +5,7 @@ import React from 'react';
 import CustomHeader from '@components/layout/CustomHeader';
 import HomeScreen from '@modules/home';
 import SearchScreen from '@modules/search/component/SearchScreen';
-
+import ProfileScreen from '../modules/profile/component/ProfileScreen';
 const HomeStack = createStackNavigator(
   {
     HomeScreen: {
@@ -18,6 +18,12 @@ const HomeStack = createStackNavigator(
       screen: SearchScreen,
       navigationOptions: ({navigation}) => ({
         header: <CustomHeader search />,
+      }),
+    },
+    ProfileScreen: {
+      screen: ProfileScreen,
+      navigationOptions: ({navigation}) => ({
+        header: <CustomHeader />,
       }),
     },
   },

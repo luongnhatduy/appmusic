@@ -9,7 +9,7 @@ const screenHeight = Dimensions.get('window').height;
 const SplashScreen = ({navigation}) => {
   useEffect(() => {
     setTimeout(() => {
-      NavigationService.reset('RootTabNavigator');
+      // NavigationService.reset('RootTabNavigator');
     }, 3300);
   }, []);
   return (

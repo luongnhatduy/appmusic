@@ -5,6 +5,7 @@ import MySongScreen from '@modules/mysong';
 import CustomHeader from '@components/layout/CustomHeader';
 import React from 'react';
 import SearchScreen from '@modules/search/component/SearchScreen';
+import ProfileScreen from '../modules/profile/component/ProfileScreen';
 
 const MySongStack = createStackNavigator(
   {
@@ -18,6 +19,12 @@ const MySongStack = createStackNavigator(
       screen: SearchScreen,
       navigationOptions: ({navigation}) => ({
         header: <CustomHeader search />,
+      }),
+    },
+    ProfileScreen: {
+      screen: ProfileScreen,
+      navigationOptions: ({navigation}) => ({
+        header: <CustomHeader />,
       }),
     },
   },

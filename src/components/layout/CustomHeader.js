@@ -2,6 +2,7 @@ import React, {useCallback, useMemo, Fragment} from 'react';
 import {
   StyleSheet,
   Text,
+  Image,
   TouchableOpacity,
   View,
   TextInput,
@@ -27,7 +28,7 @@ const style = StyleSheet.create({
   },
   leftStyle: {
     flex: 0,
-    width: '18%',
+    width: '9%',
   },
   contentStyle: {
     flexDirection: 'row',
@@ -77,6 +78,11 @@ const style = StyleSheet.create({
     padding: 0,
     marginLeft: 12,
   },
+  avt: {
+    width: 35,
+    height: 35,
+    borderRadius: 40,
+  },
 });
 
 const CustomHeader = ({search}) => {
@@ -98,6 +104,10 @@ const CustomHeader = ({search}) => {
     },
     [dispatch],
   );
+
+  const _gotoProfile = useCallback(() => {
+    NavigationService.navigate('ProfileScreen');
+  }, []);
   const headerSearch = useMemo(
     () => (
       <View style={style.viewHeader}>
@@ -131,7 +141,18 @@ const CustomHeader = ({search}) => {
   );
   const header = useMemo(
     () => (
-      <View>
+      <View style={style.viewHeader}>
+        <BaseLeft style={[style.leftStyle]}>
+          <TouchableOpacity onPress={_gotoProfile}>
+            <Image
+              style={style.avt}
+              source={{
+                uri:
+                  'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.0-9/118565996_2665047913762533_6111069045192585394_o.jpg?_nc_cat=109&ccb=2&_nc_sid=09cbfe&_nc_ohc=m7OV_NDXsM4AX_zBN8Z&_nc_ht=scontent.fhan2-5.fna&oh=44c454f6ba465db9ddfa4126f2e65afb&oe=60174121',
+              }}
+            />
+          </TouchableOpacity>
+        </BaseLeft>
         <Body style={style.contentStyle}>
           <TouchableOpacity onPress={_search} style={style.buttonSearch}>
             <SearchIcon fill={'#AAAAAA'} />
@@ -142,7 +163,7 @@ const CustomHeader = ({search}) => {
         </Body>
       </View>
     ),
-    [_search],
+    [_gotoProfile, _search],
   );
   return (
     <Fragment>
