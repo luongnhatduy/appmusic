@@ -32,6 +32,16 @@ const ProfileScreen = ({navigation}) => {
             <TouchableOpacity style={styles.btLogout} onPress={handleLogout}>
               <Text style={styles.txtLogout}>Đăng xuất</Text>
             </TouchableOpacity>
+
+            {/* <TouchableOpacity style={styles.btlogin}>
+              <View style={{backgroundColor: 'white', borderRadius: 10}}>
+                <Image
+                  style={styles.iconfb}
+                  source={require('@assets/images/facebook.png')}
+                />
+              </View>
+              <Text style={styles.txtLoginFb}>Đăng nhập bằng FaceBook</Text>
+            </TouchableOpacity> */}
           </View>
         ),
         [handleLogout],
@@ -65,6 +75,24 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 40,
     marginTop: 50,
+  },
+  iconfb: {
+    width: 35,
+    height: 35,
+  },
+  btlogin: {
+    backgroundColor: '#4267b2',
+    borderRadius: 50,
+    height: 50,
+    width: '80%',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  txtLoginFb: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '500',
   },
 });
 export default withNavigation(ProfileScreen);

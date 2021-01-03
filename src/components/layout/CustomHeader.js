@@ -83,6 +83,12 @@ const style = StyleSheet.create({
     height: 35,
     borderRadius: 40,
   },
+  avtDefault: {
+    width: 35,
+    height: 35,
+    borderRadius: 40,
+    tintColor: 'gray',
+  },
 });
 
 const CustomHeader = ({search}) => {
@@ -144,6 +150,10 @@ const CustomHeader = ({search}) => {
       <View style={style.viewHeader}>
         <BaseLeft style={[style.leftStyle]}>
           <TouchableOpacity onPress={_gotoProfile}>
+            {/* <Image
+              style={style.avtDefault}
+              source={require('@assets/images/profile-user.png')}
+            /> */}
             <Image
               style={style.avt}
               source={{
