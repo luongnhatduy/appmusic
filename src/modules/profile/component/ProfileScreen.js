@@ -10,12 +10,32 @@ import {View, Text, Image, Dimensions, StyleSheet} from 'react-native';
 import NavigationService from '@utils/NavigationService';
 import {TouchableOpacity} from 'react-native';
 import {withNavigation} from 'react-navigation';
+import {Linking} from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const ProfileScreen = ({navigation}) => {
   const handleLogout = useCallback(() => {}, []);
+
+  const loginFaceBook = useCallback(() => {
+    // Linking.openURL('https://98351aef5a01.ngrok.io/auth/facebook');
+  }, []);
+
+  // useEffect(() => {
+  //   try {
+  //     Linking.addEventListener('url', event => {
+  //       console.log('event: ', event);
+  //     });
+  //     Linking.getInitialURL().then(url => {
+  //       if (url) {
+  //         console.log('url: ', url);
+  //       }
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }, []);
   return (
     <Fragment>
       {useMemo(
@@ -33,7 +53,7 @@ const ProfileScreen = ({navigation}) => {
               <Text style={styles.txtLogout}>Đăng xuất</Text>
             </TouchableOpacity>
 
-            {/* <TouchableOpacity style={styles.btlogin}>
+            {/* <TouchableOpacity style={styles.btlogin} onPress={loginFaceBook}>
               <View style={{backgroundColor: 'white', borderRadius: 10}}>
                 <Image
                   style={styles.iconfb}

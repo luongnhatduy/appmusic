@@ -16,6 +16,13 @@ const ListTop = ({navigation}) => {
   const {datalistTop} = useSelector(state => state.home);
   const [seeMore, setSeeMore] = useState(false);
 
+  const listCategory = [
+    {id: 1, name: 'Việt Nam', color: 'red'},
+    {id: 2, name: 'US-UK', color: 'green'},
+    {id: 3, name: 'RAP', color: '#0B0B3B'},
+    {id: 3, name: 'K-Pop', color: '#2E9AFE'},
+  ];
+
   const renderItem = ({item, index}) => <ListSong item={item} index={index} />;
 
   const _setSeeMore = useCallback(() => {
@@ -31,6 +38,27 @@ const ListTop = ({navigation}) => {
                 <Text style={styles.title}>Top bài hát &gt;</Text>
               ),
             [datalistTop.length],
+          )}
+
+          {useMemo(
+            () => (
+              <FlatList
+                style={styles.listCategory}
+                horizontal
+                data={listCategory}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({item, index}) => (
+                  <View
+                    style={[
+                      styles.itemCategory,
+                      {backgroundColor: item.color},
+                    ]}>
+                    <Text style={styles.txtnameCategory}>{item.name}</Text>
+                  </View>
+                )}
+              />
+            ),
+            [listCategory],
           )}
 
           {useMemo(
@@ -80,11 +108,21 @@ const ListTop = ({navigation}) => {
 };
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
+    flex: 1,
     // justifyContent: 'center',
     alignItems: 'center',
     marginTop: 20,
     marginBottom: 35,
+  },
+  listCategory: {
+    marginTop: 10,
+  },
+  itemCategory: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: 'red',
+    marginRight: 10,
+    borderRadius: 30,
   },
   title: {
     fontSize: 18,
@@ -108,6 +146,10 @@ const styles = StyleSheet.create({
   bg: {
     height: 0,
     width: screenWidth * 0.95,
+  },
+  txtnameCategory: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 

@@ -197,6 +197,21 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
             resizeMode="stretch"
           />
         </TouchableOpacity>
+
+        {displayMusicScreen && (
+          <Image
+            // eslint-disable-next-line react-native/no-inline-styles
+            style={{
+              position: 'absolute',
+              left: 0,
+              width: displayMusicScreen ? 30 : 13,
+              height: displayMusicScreen ? 25 : 13,
+              tintColor: displayMusicScreen ? 'white' : 'black',
+            }}
+            source={require('../../assets/images/replay.png')}
+            resizeMode="stretch"
+          />
+        )}
       </View>
     </Fragment>
   );
