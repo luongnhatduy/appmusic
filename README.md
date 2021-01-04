@@ -16,3 +16,9 @@ react-native run-ios --simulator="iPhone 11 Pro Max"
 # fix build android
 rm -rf ./android/app/src/main/res/drawable-*
 rm -rf ./android/app/src/main/res/raw
+
+# debug key hash
+
+ga0RGNYHvNM5d0SLGQfpQWAPGJ8=
+# release key hash
+zY00cczs2SG28RTn1bZQvsCftvI=

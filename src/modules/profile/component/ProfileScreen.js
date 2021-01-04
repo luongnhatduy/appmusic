@@ -11,16 +11,79 @@ import NavigationService from '@utils/NavigationService';
 import {TouchableOpacity} from 'react-native';
 import {withNavigation} from 'react-navigation';
 import {Linking} from 'react-native';
-
+import {
+  LoginManager,
+  AccessToken,
+  GraphRequest,
+  LoginButton,
+  ShareDialog,
+  GraphRequestManager,
+} from 'react-native-fbsdk';
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const ProfileScreen = ({navigation}) => {
   const handleLogout = useCallback(() => {}, []);
 
-  const loginFaceBook = useCallback(() => {
+  const loginFaceBook = useCallback(async () => {
+    await LoginManager.logOut();
     // Linking.openURL('https://98351aef5a01.ngrok.io/auth/facebook');
+    LoginManager.logInWithPermissions(['public_profile']).then(
+      function(result) {
+        console.log('result', result);
+
+        if (result.isCancelled) {
+          console.log('Login cancelled');
+        } else {
+          console.log(
+            'Login success with permissions: ' +
+              result.grantedPermissions.toString(),
+          );
+
+          AccessToken.getCurrentAccessToken().then(data => {
+            console.log('data', data);
+            if (data.accessToken) {
+              console.log(data.accessToken, 'token');
+              getInfoFromToken(data.accessToken.toString());
+            }
+          });
+        }
+      },
+      function(error) {
+        console.log('Login fail with error: ' + error);
+      },
+    );
   }, []);
+
+  function getInfoFromToken(token) {
+    const PROFILE_REQUEST_PARAMS = {
+      fields: {
+        string:
+          'id, name, first_name, last_name, birthday, email, picture.type(large)',
+      },
+    };
+    const profileRequest = new GraphRequest(
+      '/me',
+      {token, parameters: PROFILE_REQUEST_PARAMS},
+      (error, result) => {
+        if (error) {
+          console.log('Login Info has an error:', error);
+        } else {
+          console.log('result', result);
+
+          if (result.isCancelled) {
+            console.log('Login cancelled');
+          }
+          if (result.email === undefined) {
+            console.log('email undefined');
+          } else {
+            console.log(result);
+          }
+        }
+      },
+    );
+    new GraphRequestManager().addRequest(profileRequest).start();
+  }
 
   // useEffect(() => {
   //   try {
@@ -41,7 +104,7 @@ const ProfileScreen = ({navigation}) => {
       {useMemo(
         () => (
           <View style={styles.container}>
-            <Image
+            {/* <Image
               style={styles.avt}
               source={{
                 uri:
@@ -51,9 +114,23 @@ const ProfileScreen = ({navigation}) => {
             <Text style={styles.name}>Lương Nhật Duy</Text>
             <TouchableOpacity style={styles.btLogout} onPress={handleLogout}>
               <Text style={styles.txtLogout}>Đăng xuất</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+            <LoginButton
+              onLoginFinished={(error, result) => {
+                if (error) {
+                  console.log('login has error: ' + result.error);
+                } else if (result.isCancelled) {
+                  console.log('login is cancelled.');
+                } else {
+                  AccessToken.getCurrentAccessToken().then(data => {
+                    console.log(data.accessToken.toString());
+                  });
+                }
+              }}
+              onLogoutFinished={() => console.log('logout.')}
+            />
 
-            {/* <TouchableOpacity style={styles.btlogin} onPress={loginFaceBook}>
+            <TouchableOpacity style={styles.btlogin} onPress={loginFaceBook}>
               <View style={{backgroundColor: 'white', borderRadius: 10}}>
                 <Image
                   style={styles.iconfb}
@@ -61,10 +138,10 @@ const ProfileScreen = ({navigation}) => {
                 />
               </View>
               <Text style={styles.txtLoginFb}>Đăng nhập bằng FaceBook</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
           </View>
         ),
-        [handleLogout],
+        [loginFaceBook],
       )}
     </Fragment>
   );
