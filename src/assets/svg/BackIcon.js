@@ -1,5 +1,5 @@
 import React from 'react';
-import { Svg, Rect, G, Polygon } from 'react-native-svg';
+import {Svg, Rect, G, Polygon} from 'react-native-svg';
 
 const BackIcon = props => (
   <Svg width="6" height="15" viewBox="0 0 6 15">

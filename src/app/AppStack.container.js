@@ -2,17 +2,27 @@ import React, {useMemo} from 'react';
 
 import NavigationService from '@utils/NavigationService';
 import AppStack from './AppStack';
+import {useSelector} from 'react-redux';
+import AppStackLogout from './AppStackLogout';
 
 const AppStackContainer = props => {
-  return useMemo(
-    () => (
+  const {isLogged} = useSelector(state => state.storage);
+
+  if (isLogged) {
+    return (
       <AppStack
         {...props}
         ref={ref => NavigationService.setTopLevelNavigator(ref)}
       />
-    ),
-    [props],
-  );
+    );
+  } else {
+    return (
+      <AppStackLogout
+        {...props}
+        ref={ref => NavigationService.setTopLevelNavigator(ref)}
+      />
+    );
+  }
 };
 
 export default AppStackContainer;

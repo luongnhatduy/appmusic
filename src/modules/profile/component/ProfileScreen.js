@@ -10,20 +10,39 @@ import {View, Text, Image, Dimensions, StyleSheet} from 'react-native';
 import NavigationService from '@utils/NavigationService';
 import {TouchableOpacity} from 'react-native';
 import {withNavigation} from 'react-navigation';
-import {Linking} from 'react-native';
 import {
   LoginManager,
   AccessToken,
   GraphRequest,
-  LoginButton,
-  ShareDialog,
   GraphRequestManager,
 } from 'react-native-fbsdk';
+import {useSelector, useDispatch} from 'react-redux';
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
+import {actions as storageAction} from '@modules/storage/store';
 
 const ProfileScreen = ({navigation}) => {
-  const handleLogout = useCallback(() => {}, []);
+  const [imgurl, setImgUrl] = useState('');
+  const [name, setName] = useState('');
+  const {dataProfile, isLogged} = useSelector(state => state.storage);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (
+      dataProfile &&
+      dataProfile.id &&
+      dataProfile.name &&
+      dataProfile.urlImg
+    ) {
+      setImgUrl(dataProfile.urlImg);
+      setName(dataProfile.name);
+    }
+  }, [dataProfile]);
+
+  const handleLogout = useCallback(async () => {
+    await LoginManager.logOut();
+    dispatch(storageAction.setIsLogged(false));
+  }, [dispatch]);
 
   const loginFaceBook = useCallback(async () => {
     await LoginManager.logOut();
@@ -53,95 +72,84 @@ const ProfileScreen = ({navigation}) => {
         console.log('Login fail with error: ' + error);
       },
     );
-  }, []);
+  }, [getInfoFromToken]);
 
-  function getInfoFromToken(token) {
-    const PROFILE_REQUEST_PARAMS = {
-      fields: {
-        string:
-          'id, name, first_name, last_name, birthday, email, picture.type(large)',
-      },
-    };
-    const profileRequest = new GraphRequest(
-      '/me',
-      {token, parameters: PROFILE_REQUEST_PARAMS},
-      (error, result) => {
-        if (error) {
-          console.log('Login Info has an error:', error);
-        } else {
-          console.log('result', result);
-
-          if (result.isCancelled) {
-            console.log('Login cancelled');
-          }
-          if (result.email === undefined) {
-            console.log('email undefined');
+  const getInfoFromToken = useCallback(
+    token => {
+      const PROFILE_REQUEST_PARAMS = {
+        fields: {
+          string:
+            'id, name, first_name, last_name, birthday, email, picture.type(large)',
+        },
+      };
+      const profileRequest = new GraphRequest(
+        '/me',
+        {token, parameters: PROFILE_REQUEST_PARAMS},
+        (error, result) => {
+          if (error) {
+            console.log('Login Info has an error:', error);
           } else {
-            console.log(result);
+            console.log('result', result);
+            setImgUrl(result.picture.data.url);
+            setName(result.name);
+            const data = {
+              id: result.id,
+              name: result.name,
+              urlImg: result.picture.data.url,
+            };
+            console.log('data', data);
+            dispatch(storageAction.setDataProfile(data));
+            dispatch(storageAction.setIsLogged(true));
+            if (result.isCancelled) {
+              console.log('Login cancelled');
+            }
+            if (result.email === undefined) {
+              console.log('email undefined');
+            } else {
+              console.log(result);
+            }
           }
-        }
-      },
-    );
-    new GraphRequestManager().addRequest(profileRequest).start();
-  }
+        },
+      );
+      new GraphRequestManager().addRequest(profileRequest).start();
+    },
+    [dispatch],
+  );
 
-  // useEffect(() => {
-  //   try {
-  //     Linking.addEventListener('url', event => {
-  //       console.log('event: ', event);
-  //     });
-  //     Linking.getInitialURL().then(url => {
-  //       if (url) {
-  //         console.log('url: ', url);
-  //       }
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }, []);
   return (
     <Fragment>
       {useMemo(
         () => (
           <View style={styles.container}>
-            {/* <Image
-              style={styles.avt}
-              source={{
-                uri:
-                  'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.0-9/118565996_2665047913762533_6111069045192585394_o.jpg?_nc_cat=109&ccb=2&_nc_sid=09cbfe&_nc_ohc=m7OV_NDXsM4AX_zBN8Z&_nc_ht=scontent.fhan2-5.fna&oh=44c454f6ba465db9ddfa4126f2e65afb&oe=60174121',
-              }}
-            />
-            <Text style={styles.name}>Lương Nhật Duy</Text>
-            <TouchableOpacity style={styles.btLogout} onPress={handleLogout}>
-              <Text style={styles.txtLogout}>Đăng xuất</Text>
-            </TouchableOpacity> */}
-            <LoginButton
-              onLoginFinished={(error, result) => {
-                if (error) {
-                  console.log('login has error: ' + result.error);
-                } else if (result.isCancelled) {
-                  console.log('login is cancelled.');
-                } else {
-                  AccessToken.getCurrentAccessToken().then(data => {
-                    console.log(data.accessToken.toString());
-                  });
-                }
-              }}
-              onLogoutFinished={() => console.log('logout.')}
-            />
-
-            <TouchableOpacity style={styles.btlogin} onPress={loginFaceBook}>
-              <View style={{backgroundColor: 'white', borderRadius: 10}}>
+            {isLogged ? (
+              <View style={styles.viewProfile}>
                 <Image
-                  style={styles.iconfb}
-                  source={require('@assets/images/facebook.png')}
+                  style={styles.avt}
+                  source={{
+                    uri: imgurl,
+                  }}
                 />
+                <Text style={styles.name}>{name}</Text>
+                <TouchableOpacity
+                  style={styles.btLogout}
+                  onPress={handleLogout}>
+                  <Text style={styles.txtLogout}>Đăng xuất</Text>
+                </TouchableOpacity>
               </View>
-              <Text style={styles.txtLoginFb}>Đăng nhập bằng FaceBook</Text>
-            </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.btlogin} onPress={loginFaceBook}>
+                <View style={{backgroundColor: 'white', borderRadius: 10}}>
+                  <Image
+                    style={styles.iconfb}
+                    source={require('@assets/images/facebook.png')}
+                  />
+                </View>
+                <Text style={styles.txtLoginFb}>Đăng nhập bằng FaceBook</Text>
+              </TouchableOpacity>
+            )}
           </View>
         ),
-        [loginFaceBook],
+        [handleLogout, imgurl, isLogged, loginFaceBook, name],
       )}
     </Fragment>
   );
@@ -152,6 +160,10 @@ const styles = StyleSheet.create({
     width: screenWidth * 0.4,
     height: screenWidth * 0.4,
     borderRadius: screenWidth * 0.4,
+  },
+  viewProfile: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   name: {
     fontSize: 26,

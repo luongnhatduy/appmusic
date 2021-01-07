@@ -5,6 +5,8 @@ const initialState = {
   display: undefined,
   songtabmini: undefined,
   listFavorite: [],
+  dataProfile: undefined,
+  isLogged: false,
 };
 
 const storage = createSlice({
@@ -15,9 +17,17 @@ const storage = createSlice({
       ...state,
       songplaying: payload,
     }),
+    setDataProfile: (state, {payload}) => ({
+      ...state,
+      dataProfile: payload,
+    }),
     setDisplay: (state, {payload}) => ({
       ...state,
       display: payload,
+    }),
+    setIsLogged: (state, {payload}) => ({
+      ...state,
+      isLogged: payload,
     }),
     setSongPlayingTabmini: (state, {payload}) => ({
       ...state,

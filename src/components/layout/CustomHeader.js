@@ -93,6 +93,7 @@ const style = StyleSheet.create({
 
 const CustomHeader = ({search}) => {
   const dispatch = useDispatch();
+  const {dataProfile, isLogged} = useSelector(state => state.storage);
 
   const _search = useCallback(() => {
     if (!search) {
@@ -150,17 +151,19 @@ const CustomHeader = ({search}) => {
       <View style={style.viewHeader}>
         <BaseLeft style={[style.leftStyle]}>
           <TouchableOpacity onPress={_gotoProfile}>
-            {/* <Image
-              style={style.avtDefault}
-              source={require('@assets/images/profile-user.png')}
-            /> */}
-            <Image
-              style={style.avt}
-              source={{
-                uri:
-                  'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.0-9/118565996_2665047913762533_6111069045192585394_o.jpg?_nc_cat=109&ccb=2&_nc_sid=09cbfe&_nc_ohc=m7OV_NDXsM4AX_zBN8Z&_nc_ht=scontent.fhan2-5.fna&oh=44c454f6ba465db9ddfa4126f2e65afb&oe=60174121',
-              }}
-            />
+            {isLogged && dataProfile && dataProfile.urlImg ? (
+              <Image
+                style={style.avt}
+                source={{
+                  uri: dataProfile.urlImg,
+                }}
+              />
+            ) : (
+              <Image
+                style={style.avtDefault}
+                source={require('@assets/images/profile-user.png')}
+              />
+            )}
           </TouchableOpacity>
         </BaseLeft>
         <Body style={style.contentStyle}>
@@ -173,7 +176,7 @@ const CustomHeader = ({search}) => {
         </Body>
       </View>
     ),
-    [_gotoProfile, _search],
+    [_gotoProfile, _search, dataProfile, isLogged],
   );
   return (
     <Fragment>

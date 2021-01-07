@@ -25,7 +25,7 @@ import {actions as mysongAction} from '@modules/mysong/store';
 
 const ListSong = ({navigation, item, index, favorite}) => {
   const [status, setStatus] = useState(false);
-  const {listFavorite} = useSelector(state => state.storage);
+  const {listFavorite, isLogged} = useSelector(state => state.storage);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -116,7 +116,7 @@ const ListSong = ({navigation, item, index, favorite}) => {
                   onPress={() => {
                     likeSong(item);
                   }}>
-                  <FavoriteIcon isLiked={status} />
+                  {!!isLogged && <FavoriteIcon isLiked={status} />}
                 </TouchableOpacity>
               )}
 
@@ -143,7 +143,7 @@ const ListSong = ({navigation, item, index, favorite}) => {
               )}
             </View>
           ),
-          [deleteFile, favorite, item, likeSong, status],
+          [deleteFile, favorite, isLogged, item, likeSong, status],
         )}
       </View>
     </Fragment>
