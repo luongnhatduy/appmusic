@@ -23,6 +23,12 @@ const home = createSlice({
       ...state,
       datalistTop: result,
     }),
+    updateDataListSong: (state, {payload}) => {
+      return {
+        ...state,
+        datalistTop: payload,
+      };
+    },
     failGetListTop: state => ({...state}),
     setSongPlaying: (state, {payload}) => ({
       ...state,

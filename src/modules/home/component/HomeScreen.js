@@ -19,16 +19,15 @@ const HomeScreen = ({navigation}) => {
   }, [dispatch, navigation]);
 
   useEffect(() => {
-    const didFocus = navigation.addListener('didFocus', () => {
-      dispatch(homeAction.setStatusLike(false));
-      if (likeSong == true) {
-        dispatch(homeAction.fetchListTop());
-      }
-    });
-
-    return () => {
-      didFocus.remove();
-    };
+    // const didFocus = navigation.addListener('didFocus', () => {
+    //   dispatch(homeAction.setStatusLike(false));
+    //   if (likeSong == true) {
+    //     dispatch(homeAction.fetchListTop());
+    //   }
+    // });
+    // return () => {
+    //   didFocus.remove();
+    // };
   }, [dispatch, likeSong, navigation]);
 
   return (

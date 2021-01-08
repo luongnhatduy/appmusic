@@ -36,6 +36,10 @@ const ListSong = ({navigation, item, index, favorite}) => {
     });
   }, [item, item.id, listFavorite]);
 
+  useEffect(() => {
+    setStatus(item.statusLike && !!item.statusLike ? true : false);
+  }, [item]);
+
   const displaymusic = useCallback(
     item => {
       if (item && item.type && item.type === 'video') {
@@ -54,11 +58,11 @@ const ListSong = ({navigation, item, index, favorite}) => {
 
   const likeSong = useCallback(
     item => {
-      dispatch(storageAction.likeSong(item));
+      dispatch(homeAction.likeSong(item));
       setStatus(!status);
-      favorite && dispatch(homeAction.setStatusLike(true));
+      // favorite && dispatch(homeAction.setStatusLike(true));
     },
-    [dispatch, favorite, status],
+    [dispatch, status],
   );
 
   const deleteFile = useCallback(

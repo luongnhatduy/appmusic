@@ -1,19 +1,21 @@
 import {createSlice} from 'redux-starter-kit';
 
 const initialState = {
-  listFavorite: [],
+  favoriteList: [],
 };
 
 const favorite = createSlice({
   name: 'favorite',
   initialState,
   reducers: {
-    startGetListFavorite: state => ({...state, listFavorite: []}),
     successGetListFavorite: (state, {payload: {result}}) => ({
       ...state,
-      listFavorite: result,
+      favoriteList: result,
     }),
-    failGetListFavorite: state => ({...state}),
+    updateListDataFavorite: (state, {payload}) => ({
+      ...state,
+      favoriteList: payload,
+    }),
   },
 });
 

@@ -35,7 +35,7 @@ const ProfileScreen = ({navigation}) => {
       {useMemo(
         () => (
           <View style={styles.container}>
-            {isLogged ? (
+            {isLogged && dataProfile ? (
               <View style={styles.viewProfile}>
                 <Image
                   style={styles.avt}
@@ -63,13 +63,7 @@ const ProfileScreen = ({navigation}) => {
             )}
           </View>
         ),
-        [
-          dataProfile.name,
-          dataProfile.urlImg,
-          handleLogout,
-          isLogged,
-          loginFaceBook,
-        ],
+        [dataProfile, handleLogout, isLogged, loginFaceBook],
       )}
     </Fragment>
   );
