@@ -10,34 +10,16 @@ import {View, Text, Image, Dimensions, StyleSheet} from 'react-native';
 import NavigationService from '@utils/NavigationService';
 import {TouchableOpacity} from 'react-native';
 import {withNavigation} from 'react-navigation';
-import {
-  LoginManager,
-  AccessToken,
-  GraphRequest,
-  GraphRequestManager,
-} from 'react-native-fbsdk';
+import {LoginManager} from 'react-native-fbsdk';
 import {useSelector, useDispatch} from 'react-redux';
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 import {actions as storageAction} from '@modules/storage/store';
+import {actions as profileAction} from '@modules/profile/store';
 
 const ProfileScreen = ({navigation}) => {
-  const [imgurl, setImgUrl] = useState('');
-  const [name, setName] = useState('');
   const {dataProfile, isLogged} = useSelector(state => state.storage);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (
-      dataProfile &&
-      dataProfile.id &&
-      dataProfile.name &&
-      dataProfile.urlImg
-    ) {
-      setImgUrl(dataProfile.urlImg);
-      setName(dataProfile.name);
-    }
-  }, [dataProfile]);
 
   const handleLogout = useCallback(async () => {
     await LoginManager.logOut();
@@ -45,76 +27,8 @@ const ProfileScreen = ({navigation}) => {
   }, [dispatch]);
 
   const loginFaceBook = useCallback(async () => {
-    await LoginManager.logOut();
-    // Linking.openURL('https://98351aef5a01.ngrok.io/auth/facebook');
-    LoginManager.logInWithPermissions(['public_profile']).then(
-      function(result) {
-        console.log('result', result);
-
-        if (result.isCancelled) {
-          console.log('Login cancelled');
-        } else {
-          console.log(
-            'Login success with permissions: ' +
-              result.grantedPermissions.toString(),
-          );
-
-          AccessToken.getCurrentAccessToken().then(data => {
-            console.log('data', data);
-            if (data.accessToken) {
-              console.log(data.accessToken, 'token');
-              getInfoFromToken(data.accessToken.toString());
-            }
-          });
-        }
-      },
-      function(error) {
-        console.log('Login fail with error: ' + error);
-      },
-    );
-  }, [getInfoFromToken]);
-
-  const getInfoFromToken = useCallback(
-    token => {
-      const PROFILE_REQUEST_PARAMS = {
-        fields: {
-          string:
-            'id, name, first_name, last_name, birthday, email, picture.type(large)',
-        },
-      };
-      const profileRequest = new GraphRequest(
-        '/me',
-        {token, parameters: PROFILE_REQUEST_PARAMS},
-        (error, result) => {
-          if (error) {
-            console.log('Login Info has an error:', error);
-          } else {
-            console.log('result', result);
-            setImgUrl(result.picture.data.url);
-            setName(result.name);
-            const data = {
-              id: result.id,
-              name: result.name,
-              urlImg: result.picture.data.url,
-            };
-            console.log('data', data);
-            dispatch(storageAction.setDataProfile(data));
-            dispatch(storageAction.setIsLogged(true));
-            if (result.isCancelled) {
-              console.log('Login cancelled');
-            }
-            if (result.email === undefined) {
-              console.log('email undefined');
-            } else {
-              console.log(result);
-            }
-          }
-        },
-      );
-      new GraphRequestManager().addRequest(profileRequest).start();
-    },
-    [dispatch],
-  );
+    dispatch(profileAction.login());
+  }, [dispatch]);
 
   return (
     <Fragment>
@@ -126,10 +40,10 @@ const ProfileScreen = ({navigation}) => {
                 <Image
                   style={styles.avt}
                   source={{
-                    uri: imgurl,
+                    uri: dataProfile.urlImg,
                   }}
                 />
-                <Text style={styles.name}>{name}</Text>
+                <Text style={styles.name}>{dataProfile.name}</Text>
                 <TouchableOpacity
                   style={styles.btLogout}
                   onPress={handleLogout}>
@@ -149,7 +63,13 @@ const ProfileScreen = ({navigation}) => {
             )}
           </View>
         ),
-        [handleLogout, imgurl, isLogged, loginFaceBook, name],
+        [
+          dataProfile.name,
+          dataProfile.urlImg,
+          handleLogout,
+          isLogged,
+          loginFaceBook,
+        ],
       )}
     </Fragment>
   );
