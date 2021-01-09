@@ -25,6 +25,8 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
   const {datalistTop} = useSelector(state => state.home);
   const {listMySong} = useSelector(state => state.mysong);
   const [status, setStatus] = useState(false);
+  const [isReplay, setIsReplay] = useState(false);
+  const {isLogged} = useSelector(state => state.storage);
 
   useEffect(() => {
     if (songplaying && songplaying.statusLike) {
@@ -40,13 +42,17 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
         SoundPlayer.playUrl(songplaying.link);
         SoundPlayer.onFinishedPlaying(() => {
           dispatch(displaymusicAction.setDisplay(false));
+          // if (!!isReplay) {
+          //   dispatch(displaymusicAction.setDisplay(true));
+          //   SoundPlayer.playUrl(songplaying.link);
+          // }
         });
         dispatch(displaymusicAction.setSeekSeconds(0));
         setSeconds(0);
         dispatch(displaymusicAction.setNavigate(' '));
       } catch (e) {}
     }
-  }, [dispatch, display, navigateDisplay, songplaying.link]);
+  }, [dispatch, display, isReplay, navigateDisplay, songplaying.link]);
 
   useEffect(() => {
     if (!!isPause && display === true) {
@@ -108,8 +114,10 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
 
   const _setdisplay = useCallback(async () => {
     if (display === undefined) {
-      dispatch(displaymusicAction.setDisplay(true));
-      SoundPlayer.playUrl(songplaying.link);
+      try {
+        dispatch(displaymusicAction.setDisplay(true));
+        SoundPlayer.playUrl(songplaying.link);
+      } catch (error) {}
     }
     dispatch(displaymusicAction.setDisplay(!display));
     try {
@@ -136,17 +144,30 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
         data = datalistTop;
       }
       const indexItem = data.reduce((newobject, item, index) => {
-        if (songplaying.link === item.link) {
-          let anh = status === 'next' ? index + 1 : index - 1;
-          newobject = data[anh];
+        if (songplaying._id === item._id) {
+          let currentIndex = status === 'next' ? index + 1 : index - 1;
+          newobject = data[currentIndex];
         }
         return newobject;
       }, {});
-      if (indexItem) {
-        SoundPlayer.playUrl(indexItem.link);
-        dispatch(displaymusicAction.setPause(false));
-        dispatch(storageAction.setSongPlaying(indexItem));
-        dispatch(displaymusicAction.setDisplay(true));
+      if (indexItem && indexItem.link) {
+        console.log('link', indexItem.link);
+        try {
+          SoundPlayer.playUrl(indexItem.link);
+          dispatch(displaymusicAction.setPause(false));
+          dispatch(storageAction.setSongPlaying(indexItem));
+          dispatch(displaymusicAction.setDisplay(true));
+        } catch (error) {}
+      } else {
+        if (data[0] && data[0].link) {
+          console.log('link', data[0].link);
+          try {
+            SoundPlayer.playUrl(data[0].link);
+            dispatch(displaymusicAction.setPause(false));
+            dispatch(storageAction.setSongPlaying(data[0]));
+            dispatch(displaymusicAction.setDisplay(true));
+          } catch (error) {}
+        }
       }
     },
     [datalistTop, dispatch, listMySong, songplaying],
@@ -159,6 +180,10 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
     },
     [dispatch, status],
   );
+
+  const rePlay = useCallback(() => {
+    setIsReplay(!isReplay);
+  }, [isReplay]);
 
   return (
     <Fragment>
@@ -214,22 +239,28 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
             resizeMode="stretch"
           />
         </TouchableOpacity>
-
-        {displayMusicScreen && (
-          <Image
-            // eslint-disable-next-line react-native/no-inline-styles
-            style={{
-              position: 'absolute',
-              left: 0,
-              width: displayMusicScreen ? 30 : 13,
-              height: displayMusicScreen ? 25 : 13,
-              tintColor: displayMusicScreen ? 'white' : 'black',
-            }}
-            source={require('../../assets/images/replay.png')}
-            resizeMode="stretch"
-          />
+        {useMemo(
+          () =>
+            displayMusicScreen && (
+              <TouchableOpacity
+                style={{position: 'absolute', left: 0}}
+                onPress={rePlay}>
+                <Image
+                  // eslint-disable-next-line react-native/no-inline-styles
+                  style={{
+                    width: displayMusicScreen ? 30 : 13,
+                    height: displayMusicScreen ? 25 : 13,
+                    tintColor: isReplay ? '#800080' : 'white',
+                  }}
+                  source={require('../../assets/images/replay.png')}
+                  resizeMode="stretch"
+                />
+              </TouchableOpacity>
+            ),
+          [displayMusicScreen, isReplay, rePlay],
         )}
-        {displayMusicScreen && (
+
+        {displayMusicScreen && isLogged && !songplaying.type_audio && (
           <TouchableOpacity
             style={{
               position: 'absolute',
