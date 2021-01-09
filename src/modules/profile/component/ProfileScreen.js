@@ -24,6 +24,7 @@ const ProfileScreen = ({navigation}) => {
   const handleLogout = useCallback(async () => {
     await LoginManager.logOut();
     dispatch(storageAction.setIsLogged(false));
+    dispatch(storageAction.setDataProfile(undefined));
   }, [dispatch]);
 
   const loginFaceBook = useCallback(async () => {

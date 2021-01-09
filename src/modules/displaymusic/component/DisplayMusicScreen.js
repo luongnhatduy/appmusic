@@ -1,12 +1,23 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {
+  Fragment,
+  useCallback,
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+} from 'react';
 import {
   TouchableOpacity,
   View,
   Text,
+  ScrollView,
   Image,
+  ActivityIndicator,
+  Keyboard,
   FlatList,
   ImageBackground,
   StyleSheet,
+  Dimensions,
 } from 'react-native';
 import {withNavigation} from 'react-navigation';
 import DisplayMusicHeader from './DisplayMusicHeader';
@@ -15,27 +26,26 @@ import SoundPlayer from 'react-native-sound-player';
 import DisplayMusicComponent from './DisplayMusicComponent';
 import {useSelector, useDispatch} from 'react-redux';
 import {SwipeablePanel} from 'rn-swipeable-panel';
-const dataComment = [
-  {
-    id: 1,
-    username: 'Lương Nhật Duy',
-    img:
-      'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.0-9/118565996_2665047913762533_6111069045192585394_o.jpg?_nc_cat=109&ccb=2&_nc_sid=09cbfe&_nc_ohc=m7OV_NDXsM4AX_zBN8Z&_nc_ht=scontent.fhan2-5.fna&oh=44c454f6ba465db9ddfa4126f2e65afb&oe=60174121',
-    text: 'Ca khúc rất tuyệt với !!',
-    date: '10 phút trước ',
-  },
-  {
-    id: 2,
-    username: 'Liêm Đào',
-    img:
-      'https://scontent.fhan2-6.fna.fbcdn.net/v/t1.0-9/120637103_374165610635838_3451201571251309825_o.jpg?_nc_cat=103&ccb=2&_nc_sid=09cbfe&_nc_ohc=WtChiTxQp7kAX-izqvY&_nc_ht=scontent.fhan2-6.fna&oh=27390c74d91f3dd57237ef4e0a345ee0&oe=6018CA1C',
-    text: 'Vẫn không hay bằng anh mình hát :)',
-    date: '7 phút trước ',
-  },
-];
+import {TextInput} from 'react-native';
+import {actions as displaymusicAction} from '@modules/displaymusic/store';
+import moment from 'moment';
+import 'moment/min/locales';
+
+const screenWidth = Dimensions.get('window').width;
 const DisplayMusicScreen = ({navigation}) => {
-  const {songplaying} = useSelector(state => state.storage);
+  const {comments} = useSelector(state => state.musicdisplay);
+
+  console.log(comments, 'comments');
   const [swipeablePanelActive, setSwipeablePanelActive] = useState(false);
+  const [txtComment, setTxtComment] = useState('');
+  const {dataProfile, songplaying} = useSelector(state => state.storage);
+  const dispatch = useDispatch();
+  const inputRef = useRef();
+  const flatList = React.useRef({animated: false});
+
+  useEffect(() => {
+    moment.locale('vi');
+  }, [dispatch]);
 
   const closePanel = useCallback(() => {
     setSwipeablePanelActive(false);
@@ -43,80 +53,204 @@ const DisplayMusicScreen = ({navigation}) => {
 
   const openPanel = useCallback(() => {
     setSwipeablePanelActive(true);
-  }, [setSwipeablePanelActive]);
+    dispatch(displaymusicAction.fetchComment());
+  }, [dispatch]);
+
+  const onChangeText = useCallback(value => {
+    setTxtComment(value);
+  }, []);
+
+  const sendComment = useCallback(() => {
+    if (txtComment !== '') {
+      dispatch(displaymusicAction.sendComment(txtComment));
+      inputRef.current.blur();
+      setTxtComment('');
+    }
+  }, [dispatch, txtComment]);
+
+  const renderItemComment = useCallback(
+    ({item, index}) => (
+      <View style={{flexDirection: 'row', marginTop: 15}}>
+        <Image
+          style={{width: 35, height: 35, borderRadius: 40}}
+          source={{
+            uri: item.user.urlImg,
+          }}
+        />
+        <View
+          style={{
+            flexDirection: 'column',
+            marginLeft: 10,
+            paddingVertical: 5,
+            paddingHorizontal: 10,
+            borderRadius: 10,
+            backgroundColor: '#f0efef',
+          }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <Text style={{fontSize: 16, fontWeight: '700'}}>
+              {item.user.name}
+            </Text>
+            <Text style={{marginLeft: 10, color: 'gray'}}>
+              {moment(item.createdAt).fromNow()}
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginTop: 5,
+            }}>
+            <Text style={{color: '#24292e'}}>{item.text}</Text>
+            {!item._id && <Text style={{color: 'gray'}}> (đang chờ...)</Text>}
+          </View>
+        </View>
+      </View>
+    ),
+    [],
+  );
 
   return (
-    <ImageBackground
-      source={require('../../../assets/images/displaymusic.jpg')}
-      style={styles.imgbg}
-      imageStyle={styles.img}>
-      <DisplayMusicHeader item={songplaying} />
-      <ImgDisplayMusic item={songplaying} />
-      <DisplayMusicComponent />
-      <TouchableOpacity
-        onPress={openPanel}
-        style={{
-          backgroundColor: 'white',
-          height: 50,
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          paddingHorizontal: 20,
-          paddingVertical: 5,
-        }}>
-        <Text style={{fontSize: 20, fontWeight: '500'}}>Bình luận</Text>
-      </TouchableOpacity>
-      <SwipeablePanel
-        fullWidth={true}
-        isActive={swipeablePanelActive}
-        onClose={closePanel}
-        onPressCloseButton={closePanel}>
-        <View style={{paddingHorizontal: 10}}>
-          <Text style={{fontSize: 20, fontWeight: '500'}}>Bình luận</Text>
-          <FlatList
-            data={dataComment}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({item, index}) => (
-              <View style={{flexDirection: 'row', marginTop: 15}}>
-                <Image
-                  style={{width: 35, height: 35, borderRadius: 40}}
-                  source={{
-                    uri: item.img,
-                  }}
-                />
-                <View
+    <Fragment>
+      {useMemo(
+        () => (
+          <ImageBackground
+            source={require('../../../assets/images/displaymusic.jpg')}
+            style={styles.imgbg}
+            imageStyle={styles.img}>
+            <DisplayMusicHeader item={songplaying} />
+            <ImgDisplayMusic item={songplaying} />
+            <DisplayMusicComponent />
+            {dataProfile && (
+              <View>
+                <TouchableOpacity
+                  onPress={openPanel}
                   style={{
-                    flexDirection: 'column',
-                    marginLeft: 10,
+                    backgroundColor: 'white',
+                    height: 50,
+                    borderTopLeftRadius: 20,
+                    borderTopRightRadius: 20,
+                    paddingHorizontal: 20,
                     paddingVertical: 5,
-                    paddingHorizontal: 10,
-                    borderRadius: 10,
-                    backgroundColor: '#e0e2e4',
                   }}>
-                  <View style={{flexDirection: 'row'}}>
-                    <Text style={{fontSize: 14, fontWeight: '500'}}>
-                      {item.username}
-                    </Text>
-                    <Text style={{marginLeft: 10, color: 'gray'}}>
-                      {item.date}
-                    </Text>
-                  </View>
-
-                  <Text style={{color: '#24292e', marginTop: 5}}>
-                    {item.text}
+                  <Text style={{fontSize: 20, fontWeight: '500'}}>
+                    Bình luận
                   </Text>
-                </View>
+                </TouchableOpacity>
+                <SwipeablePanel
+                  fullWidth={true}
+                  isActive={swipeablePanelActive}
+                  onClose={closePanel}
+                  onlyLarge={true}
+                  scrollViewProps={true}
+                  style={styles.panel}
+                  onPressCloseButton={closePanel}>
+                  <View
+                    style={{
+                      paddingHorizontal: 10,
+                      marginBottom: 80,
+                    }}>
+                    <Text style={{fontSize: 20, fontWeight: '500'}}>
+                      Bình luận
+                    </Text>
+                    {comments.length > 0 && (
+                      <FlatList
+                        inverted
+                        data={comments}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={renderItemComment}
+                      />
+                    )}
+                    {comments.length == 0 && (
+                      <ActivityIndicator
+                        size="large"
+                        color="#990099"
+                        style={{marginTop: 10}}
+                      />
+                    )}
+                  </View>
+                </SwipeablePanel>
+
+                {swipeablePanelActive && (
+                  <View style={styles.comment}>
+                    <View style={{flexDirection: 'row', paddingHorizontal: 15}}>
+                      <Image
+                        style={{width: 35, height: 35, borderRadius: 40}}
+                        source={{
+                          uri: dataProfile.urlImg,
+                        }}
+                      />
+                      <TextInput
+                        placeholder="Viết bình luận..."
+                        paddingHorizontal={10}
+                        onSubmitEditing={Keyboard.dismiss}
+                        ref={inputRef}
+                        value={txtComment}
+                        onChangeText={onChangeText}
+                        style={styles.textinput}
+                      />
+                      <TouchableOpacity onPress={sendComment}>
+                        <Image
+                          style={styles.iconSend}
+                          resizeMode="contain"
+                          source={require('@assets/images/send.png')}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                )}
               </View>
             )}
-          />
-        </View>
-      </SwipeablePanel>
-    </ImageBackground>
+          </ImageBackground>
+        ),
+        [
+          closePanel,
+          comments,
+          dataProfile,
+          onChangeText,
+          openPanel,
+          sendComment,
+          songplaying,
+          swipeablePanelActive,
+          txtComment,
+          renderItemComment,
+        ],
+      )}
+    </Fragment>
   );
 };
 
 const styles = StyleSheet.create({
   imgbg: {
     flex: 1,
+  },
+  comment: {
+    // height: 40,
+    width: screenWidth,
+    zIndex: 10000,
+    backgroundColor: 'white',
+    position: 'absolute',
+    bottom: 0,
+    paddingVertical: 10,
+    right: 0,
+    left: 0,
+  },
+  textinput: {
+    flex: 1,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 40,
+    height: 40,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  iconSend: {
+    width: 40,
+    height: 40,
   },
 });
 

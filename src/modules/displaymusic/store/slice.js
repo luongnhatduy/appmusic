@@ -8,12 +8,20 @@ const initialState = {
   valueSlider: 0,
   onChangeSeconds: false,
   seconds: 0,
+  isCommentSuccess: false,
+  comments: [],
 };
 
 const musicdisplay = createSlice({
   name: 'musicdisplay',
   initialState,
   reducers: {
+    failGetListFavorite: state => ({...state}),
+    startGetListFavorite: state => ({...state, comments: []}),
+    successGetListFavorite: (state, {payload: {result}}) => ({
+      ...state,
+      comments: result,
+    }),
     setSeekSeconds: (state, {payload}) => ({
       ...state,
       seekSeconds: payload,
@@ -33,6 +41,14 @@ const musicdisplay = createSlice({
     setDisplay: (state, {payload}) => ({
       ...state,
       display: payload,
+    }),
+    commentSuccess: (state, {payload}) => ({
+      ...state,
+      isCommentSuccess: payload,
+    }),
+    setDataComments: (state, {payload}) => ({
+      ...state,
+      comments: payload,
     }),
     setPause: (state, {payload}) => ({
       ...state,
