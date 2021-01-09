@@ -5,12 +5,16 @@ import {useSelector, useDispatch} from 'react-redux';
 import {actions as searchAction} from '@modules/search/store';
 import DisplayMusicMini from '@components/layout/DisplayMusicMini';
 import ListSearch from './ListSearch';
+import {actions as favoriteAction} from '@modules/favorite/store';
+
 const SearchScreen = ({navigation}) => {
   const {songplaying} = useSelector(state => state.storage);
   const {display} = useSelector(state => state.musicdisplay);
 
   const dispatch = useDispatch();
-  useEffect(() => {}, [dispatch]);
+  useEffect(() => {
+    dispatch(favoriteAction.fetchListFavorite());
+  }, [dispatch]);
 
   return (
     <Fragment>

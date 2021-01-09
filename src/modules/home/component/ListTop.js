@@ -1,4 +1,10 @@
-import React, {Fragment, useCallback, useState, useMemo} from 'react';
+import React, {
+  Fragment,
+  useEffect,
+  useCallback,
+  useState,
+  useMemo,
+} from 'react';
 import {
   TouchableOpacity,
   View,
@@ -11,97 +17,112 @@ import {
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import ListSong from '@components/layout/ListSong';
+import {actions as homeAction} from '@modules/home/store';
+
 const screenWidth = Dimensions.get('window').width;
 const ListTop = ({navigation}) => {
-  const {datalistTop} = useSelector(state => state.home);
+  const {datalistTop, categories} = useSelector(state => state.home);
   const [seeMore, setSeeMore] = useState(false);
+  const [isSelected, setIsSelected] = useState('');
+  const dispatch = useDispatch();
 
-  const listCategory = [
-    {id: 1, name: 'Việt Nam', color: 'red'},
-    {id: 2, name: 'US-UK', color: 'green'},
-    {id: 3, name: 'RAP', color: '#0B0B3B'},
-    {id: 3, name: 'K-Pop', color: '#2E9AFE'},
-  ];
-
-  const renderItem = ({item, index}) => <ListSong item={item} index={index} />;
+  useEffect(() => {
+    if (categories.length > 0) {
+      setIsSelected(0);
+    }
+  }, [categories, categories.length]);
 
   const _setSeeMore = useCallback(() => {
     setSeeMore(!seeMore);
   }, [seeMore, setSeeMore]);
+
+  const selectCategory = useCallback(
+    (item, index) => {
+      setIsSelected(index);
+      dispatch(homeAction.fetchListTop(item));
+    },
+    [dispatch],
+  );
   return (
     <Fragment>
       <View style={styles.container}>
-        <View>
-          {useMemo(
-            () =>
-              datalistTop.length > 0 && (
-                <Text style={styles.title}>Top bài hát &gt;</Text>
-              ),
-            [datalistTop.length],
-          )}
+        <View style={styles.contai}>
+          <Text style={styles.title}>Top bài hát &gt;</Text>
 
           {useMemo(
             () => (
               <FlatList
                 style={styles.listCategory}
                 horizontal
-                data={listCategory}
+                data={categories}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({item, index}) => (
-                  <View
-                    style={[
-                      styles.itemCategory,
-                      {backgroundColor: item.color},
-                    ]}>
-                    <Text style={styles.txtnameCategory}>{item.name}</Text>
+                  <View style={styles.category}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        selectCategory(item, index);
+                      }}
+                      style={[
+                        styles.itemCategory,
+                        {backgroundColor: item.bgColor},
+                      ]}>
+                      <Text style={styles.txtnameCategory}>{item.name}</Text>
+                    </TouchableOpacity>
+                    <View
+                      style={[
+                        styles.baseTop,
+                        {
+                          borderTopColor:
+                            isSelected === index ? item.bgColor : 'transparent',
+                        },
+                      ]}
+                    />
                   </View>
                 )}
               />
             ),
-            [listCategory],
-          )}
-
-          {useMemo(
-            () =>
-              datalistTop.length > 0 && (
-                <ImageBackground
-                  source={require('../../../assets/images/backgroundimg.jpg')}
-                  style={datalistTop.length == 0 ? styles.bg : styles.imgbg}
-                  imageStyle={styles.img}>
-                  <FlatList
-                    data={
-                      seeMore === false ? datalistTop.slice(0, 10) : datalistTop
-                    }
-                    keyExtractor={(item, index) => index.toString()}
-                    style={{marginTop: 10}}
-                    renderItem={({item, index}) => (
-                      <ListSong item={item} index={index} />
-                    )}
-                  />
-                  <TouchableOpacity
-                    style={styles.seemore}
-                    onPress={_setSeeMore}>
-                    <Text style={{color: 'white'}}>
-                      {seeMore == true ? 'Thu gọn >' : 'Xem thêm >'}
-                    </Text>
-                  </TouchableOpacity>
-                </ImageBackground>
-              ),
-            [_setSeeMore, datalistTop, seeMore],
-          )}
-
-          {useMemo(
-            () =>
-              datalistTop.length === 0 && (
-                <ActivityIndicator
-                  size="large"
-                  color="#990099"
-                  style={{marginTop: 10}}
-                />
-              ),
-            [datalistTop],
+            [categories, isSelected, selectCategory],
           )}
         </View>
+
+        {useMemo(
+          () =>
+            datalistTop.length > 0 && (
+              <ImageBackground
+                source={require('../../../assets/images/backgroundimg.jpg')}
+                style={datalistTop.length == 0 ? styles.bg : styles.imgbg}
+                imageStyle={styles.img}>
+                <FlatList
+                  data={
+                    seeMore === false ? datalistTop.slice(0, 10) : datalistTop
+                  }
+                  keyExtractor={(item, index) => index.toString()}
+                  style={{marginTop: 10}}
+                  renderItem={({item, index}) => (
+                    <ListSong item={item} index={index} />
+                  )}
+                />
+                <TouchableOpacity style={styles.seemore} onPress={_setSeeMore}>
+                  <Text style={{color: 'white'}}>
+                    {seeMore == true ? 'Thu gọn >' : 'Xem thêm >'}
+                  </Text>
+                </TouchableOpacity>
+              </ImageBackground>
+            ),
+          [_setSeeMore, datalistTop, seeMore],
+        )}
+
+        {useMemo(
+          () =>
+            datalistTop.length === 0 && (
+              <ActivityIndicator
+                size="large"
+                color="#990099"
+                style={{marginTop: 10}}
+              />
+            ),
+          [datalistTop],
+        )}
       </View>
     </Fragment>
   );
@@ -114,6 +135,26 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 35,
   },
+  contai: {
+    width: '100%',
+    paddingHorizontal: 15,
+  },
+  baseTop: {
+    width: 0,
+    height: 0,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderLeftWidth: 10,
+    borderRightWidth: 10,
+    borderTopWidth: 10,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+  },
+  category: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
   listCategory: {
     marginTop: 10,
   },
@@ -121,7 +162,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     backgroundColor: 'red',
-    marginRight: 10,
     borderRadius: 30,
   },
   title: {

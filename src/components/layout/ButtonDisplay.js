@@ -10,6 +10,8 @@ import {useSelector, useDispatch} from 'react-redux';
 import SoundPlayer from 'react-native-sound-player';
 import {actions as storageAction} from '@modules/storage/store';
 import {actions as displaymusicAction} from '@modules/displaymusic/store';
+import FavoriteIcon from '@assets/svg/FavoriteIcon';
+import {actions as homeAction} from '@modules/home/store';
 
 const ButtonDisplay = ({navigation, displayMusicScreen}) => {
   const {songplaying} = useSelector(state => state.storage);
@@ -22,6 +24,13 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
   } = useSelector(state => state.musicdisplay);
   const {datalistTop} = useSelector(state => state.home);
   const {listMySong} = useSelector(state => state.mysong);
+  const [status, setStatus] = useState(false);
+
+  useEffect(() => {
+    if (songplaying && songplaying.statusLike) {
+      setStatus(songplaying.statusLike);
+    }
+  }, [songplaying]);
 
   const dispatch = useDispatch();
   const [seconds, setSeconds] = useState(0);
@@ -143,6 +152,14 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
     [datalistTop, dispatch, listMySong, songplaying],
   );
 
+  const likeSong = useCallback(
+    item => {
+      dispatch(homeAction.likeSong(item));
+      setStatus(!status);
+    },
+    [dispatch, status],
+  );
+
   return (
     <Fragment>
       <View style={styles.container}>
@@ -211,6 +228,20 @@ const ButtonDisplay = ({navigation, displayMusicScreen}) => {
             source={require('../../assets/images/replay.png')}
             resizeMode="stretch"
           />
+        )}
+        {displayMusicScreen && (
+          <TouchableOpacity
+            style={{
+              position: 'absolute',
+              right: 0,
+              width: displayMusicScreen ? 30 : 13,
+              height: displayMusicScreen ? 25 : 13,
+            }}
+            onPress={() => {
+              likeSong(songplaying);
+            }}>
+            <FavoriteIcon isLiked={status} />
+          </TouchableOpacity>
         )}
       </View>
     </Fragment>

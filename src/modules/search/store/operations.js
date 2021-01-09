@@ -12,8 +12,24 @@ export const searchKey = createOperation({
     successAction: successSearchKey,
     failAction: failSearchKey,
   },
-  process: async ({payload, dispatch}) => {
-    const result = await services.searchKey(payload);
+  process: async ({payload, dispatch, getState}) => {
+    console.log(payload, 'key');
+    const favoriteList = getState().favorite.favoriteList;
+    let result = await services.searchKey(payload);
+    if (result && result.length > 0) {
+      const idFavorites = favoriteList.map(item => item._id);
+      result = result.map(item => {
+        if (idFavorites.indexOf(item._id) !== -1) {
+          return favoriteList[idFavorites.indexOf(item._id)];
+        } else {
+          return {
+            ...item,
+            statusLike: false,
+          };
+        }
+      });
+    }
+    console.log(result, 'reslut');
     return result;
   },
 });

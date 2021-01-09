@@ -15,6 +15,9 @@ const {
     startLikeSong,
     failLikeSong,
     updateDataListSong,
+    startGetListCategory,
+    successGetListCategory,
+    failGetListCategory,
   },
 } = slice;
 
@@ -30,6 +33,21 @@ export const fetchListBanner = createOperation({
   },
 });
 
+export const fetchListCategory = createOperation({
+  actions: {
+    startAction: startGetListCategory,
+    successAction: successGetListCategory,
+    failAction: failGetListCategory,
+  },
+  process: async ({payload, dispatch}) => {
+    const result = await services.getListCategory();
+    console.log(result, 'result');
+    fetchListTop();
+    if (result.length > 0) dispatch(fetchListTop(result[0]));
+    return result;
+  },
+});
+
 export const fetchListTop = createOperation({
   actions: {
     startAction: startGetListTop,
@@ -37,13 +55,13 @@ export const fetchListTop = createOperation({
     failAction: failGetListTop,
   },
   process: async ({payload, dispatch, getState}) => {
+    console.log(payload, 'payloaddddd');
     let dataProfile = getState().storage.dataProfile;
     const facebookId =
       dataProfile && dataProfile.facebookId
         ? dataProfile.facebookId
         : undefined;
-    console.log(dataProfile, 'dataProfile', facebookId);
-    const result = await services.getListTop(facebookId);
+    const result = await services.getListTop(facebookId, payload._id);
     console.log(result, 'result');
     return result;
   },
@@ -76,9 +94,19 @@ export const likeSong = createOperation({
         console.log(songId, 'songId');
         const arrId = newdata.map(item => item._id);
         console.log(arrId, 'arrId', arrId.indexOf(songId));
-        newdata[arrId.indexOf(songId)].statusLike = false;
+        newdata = newdata.map((item, index) => {
+          if (arrId.indexOf(songId) === index)
+            return {
+              ...item,
+              statusLike: false,
+            };
+          return item;
+        });
         console.log(newdata, 'newdata');
+        console.log(newdata[arrId.indexOf(songId)].statusLike, 'stastuslike');
+        dispatch(startGetListTop());
         dispatch(updateDataListSong(newdata));
+
         dispatch(favoriteAction.updateListData(song));
       } catch (error) {}
     }
@@ -93,7 +121,15 @@ export const likeSong = createOperation({
       try {
         const songId = song.data._doc.songId.toString();
         const arrId = newdata.map(item => item._id);
-        newdata[arrId.indexOf(songId)].statusLike = true;
+        newdata = newdata.map((item, index) => {
+          if (arrId.indexOf(songId) === index)
+            return {
+              ...item,
+              statusLike: true,
+            };
+          return item;
+        });
+        dispatch(startGetListTop());
         dispatch(updateDataListSong(newdata));
         dispatch(favoriteAction.updateListData(song));
       } catch (error) {}

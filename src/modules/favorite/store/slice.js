@@ -8,14 +8,16 @@ const favorite = createSlice({
   name: 'favorite',
   initialState,
   reducers: {
-    successGetListFavorite: (state, {payload: {result}}) => ({
-      ...state,
-      favoriteList: result,
-    }),
     updateListDataFavorite: (state, {payload}) => ({
       ...state,
       favoriteList: payload,
     }),
+    startGetListFavorite: state => ({...state, favoriteList: []}),
+    successGetListFavorite: (state, {payload: {result}}) => ({
+      ...state,
+      favoriteList: result,
+    }),
+    failGGetListFavorite: state => ({...state}),
   },
 });
 

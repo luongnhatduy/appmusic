@@ -5,8 +5,12 @@ export const getListBanner = async () => {
   return api.get(`/all_banner`).then(res => res.data);
 };
 
-export const getListTop = async payload => {
-  return api.get(`/list_top/${payload}`).then(res =>
+export const getListCategory = async () => {
+  return api.get(`/fetchCategory`).then(res => res.data);
+};
+
+export const getListTop = async (facebookId, categoryId) => {
+  return api.get(`/list_top/${facebookId}/${categoryId}`).then(res =>
     res.data.map(element => {
       console.log(element.statusLike);
       return {

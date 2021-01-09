@@ -3,12 +3,19 @@ import slice from './slice';
 import * as services from './service';
 
 const {
-  actions: {successGetListFavorite, updateListDataFavorite},
+  actions: {
+    successGetListFavorite,
+    startGetListFavorite,
+    failGGetListFavorite,
+    updateListDataFavorite,
+  },
 } = slice;
 
 export const fetchListFavorite = createOperation({
   actions: {
     successAction: successGetListFavorite,
+    startAction: startGetListFavorite,
+    failAction: failGGetListFavorite,
   },
   process: async ({payload, dispatch, getState}) => {
     let dataProfile = getState().storage.dataProfile;

@@ -2,6 +2,7 @@ import {createSlice} from 'redux-starter-kit';
 
 const initialState = {
   bannerList: [],
+  categories: [],
   datalistTop: [],
   songplaying: {},
   likeSong: false,
@@ -17,6 +18,13 @@ const home = createSlice({
       bannerList: result,
     }),
     failGetListBanner: state => ({...state}),
+
+    startGetListCategory: state => ({...state, categories: []}),
+    successGetListCategory: (state, {payload: {result}}) => ({
+      ...state,
+      categories: result,
+    }),
+    failGetListCategory: state => ({...state}),
 
     startGetListTop: state => ({...state, datalistTop: []}),
     successGetListTop: (state, {payload: {result}}) => ({

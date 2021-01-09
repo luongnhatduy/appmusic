@@ -115,7 +115,7 @@ const DisplayMusicScreen = ({navigation}) => {
             {!item._id && <Text style={{color: 'gray'}}> (đang chờ...)</Text>}
           </View>
         </View>
-        {item.accountId == dataProfile.facebookId && (
+        {dataProfile && item.accountId == dataProfile.facebookId && (
           <TouchableOpacity
             onPress={() => deleteComment(item)}
             style={{flex: 1, justifyContent: 'center'}}>
@@ -128,7 +128,7 @@ const DisplayMusicScreen = ({navigation}) => {
         )}
       </View>
     ),
-    [dataProfile.facebookId, deleteComment],
+    [dataProfile, deleteComment],
   );
 
   return (

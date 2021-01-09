@@ -26,10 +26,7 @@ import NavigationService from '@utils/NavigationService';
 const screenWidth = Dimensions.get('window').width;
 
 const ListSearch = ({navigation}) => {
-  const dispatch = useDispatch();
-
   const {listSearch} = useSelector(state => state.search);
-
   const renderItem = ({item, index}) => (
     <ListSong item={item} index={index} favorite />
   );

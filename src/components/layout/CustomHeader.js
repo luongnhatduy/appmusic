@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, Fragment} from 'react';
+import React, {useCallback, useMemo, Fragment, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -94,7 +94,7 @@ const style = StyleSheet.create({
 const CustomHeader = ({search}) => {
   const dispatch = useDispatch();
   const {dataProfile, isLogged} = useSelector(state => state.storage);
-
+  const [timeClick, setTimeClick] = useState(null);
   const _search = useCallback(() => {
     if (!search) {
       NavigationService.navigate('SearchScreen');
@@ -107,9 +107,13 @@ const CustomHeader = ({search}) => {
   }, []);
   const searchKeyword = useCallback(
     txt => {
-      dispatch(searchAction.searchKey(txt));
+      let currentTime = new Date().getTime();
+      if (!timeClick || currentTime - timeClick > 1000) {
+        setTimeClick(currentTime);
+        dispatch(searchAction.searchKey(txt));
+      }
     },
-    [dispatch],
+    [dispatch, timeClick],
   );
 
   const _gotoProfile = useCallback(() => {
