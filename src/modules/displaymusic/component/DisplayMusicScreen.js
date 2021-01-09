@@ -34,8 +34,6 @@ import 'moment/min/locales';
 const screenWidth = Dimensions.get('window').width;
 const DisplayMusicScreen = ({navigation}) => {
   const {comments} = useSelector(state => state.musicdisplay);
-
-  console.log(comments, 'comments');
   const [swipeablePanelActive, setSwipeablePanelActive] = useState(false);
   const [txtComment, setTxtComment] = useState('');
   const {dataProfile, songplaying} = useSelector(state => state.storage);
@@ -67,6 +65,14 @@ const DisplayMusicScreen = ({navigation}) => {
       setTxtComment('');
     }
   }, [dispatch, txtComment]);
+
+  const deleteComment = useCallback(
+    item => {
+      console.log(item, 'item');
+      dispatch(displaymusicAction.deleteComment(item));
+    },
+    [dispatch],
+  );
 
   const renderItemComment = useCallback(
     ({item, index}) => (
@@ -109,9 +115,20 @@ const DisplayMusicScreen = ({navigation}) => {
             {!item._id && <Text style={{color: 'gray'}}> (đang chờ...)</Text>}
           </View>
         </View>
+        {item.accountId == dataProfile.facebookId && (
+          <TouchableOpacity
+            onPress={() => deleteComment(item)}
+            style={{flex: 1, justifyContent: 'center'}}>
+            <Image
+              style={{marginLeft: 15, width: 20, height: 20, borderRadius: 40}}
+              resizeMode="contain"
+              source={require('@assets/images/delete.png')}
+            />
+          </TouchableOpacity>
+        )}
       </View>
     ),
-    [],
+    [dataProfile.facebookId, deleteComment],
   );
 
   return (

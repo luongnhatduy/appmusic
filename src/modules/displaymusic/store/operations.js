@@ -16,10 +16,11 @@ const {
 export const sendComment = createOperation({
   actions: {successAction: commentSuccess},
   process: async ({payload, dispatch, getState}) => {
+    console.log('send');
+
     let dataProfile = getState().storage.dataProfile;
     let songplaying = getState().storage.songplaying;
     let listComment = getState().musicdisplay.comments;
-    console.log(payload, 'payload');
     const data = {
       accountId: dataProfile.facebookId,
       songId: songplaying._id,
@@ -42,6 +43,19 @@ export const sendComment = createOperation({
   },
 });
 
+export const deleteComment = createOperation({
+  actions: {},
+  process: async ({payload, dispatch, getState}) => {
+    console.log('delete');
+    let listComment = getState().musicdisplay.comments;
+    dispatch(
+      setDataComments(listComment.filter(item => item._id !== payload._id)),
+    );
+    const result = await services.deleteComment({id: payload._id});
+    console.log(result, 'result');
+  },
+});
+
 export const fetchComment = createOperation({
   actions: {
     startAction: startGetListFavorite,
@@ -52,11 +66,7 @@ export const fetchComment = createOperation({
     let dataProfile = getState().storage.dataProfile;
     let songplaying = getState().storage.songplaying;
 
-    const facebookId =
-      dataProfile && dataProfile.facebookId
-        ? dataProfile.facebookId
-        : undefined;
-    const result = await services.fetchComment(facebookId, songplaying._id);
+    const result = await services.fetchComment(songplaying._id);
     return result.data.map(item => {
       return {
         ...item.item,
